@@ -1,22 +1,21 @@
-from flask import render_template, request, g, redirect, url_for
-from app import app
+# from flask import render_template, request, g, redirect, url_for
+from main import app
 
 
-@app.route('/')
-@app.route('/index')
+@app.route("/")
+@app.route("/index")
 def hello_world():  # put application's code here
-
     app.logger.warning("Visit index ")
     return str(app.config.items())
 
 
-@app.route('/links', methods=['GET', 'POST'])
+@app.route("/links", methods=["GET", "POST"])
 def links():
-    app.logger.info("Visit links")
-    return 'ok'
+    app.logger.debug("Visit links")
+    return "ok"
 
 
-@app.route('/logs', methods=["GET"])
+@app.route("/logs", methods=["GET"])
 def logs():
     app.logger.info("Visit logs")
-    return 'ok'
+    return "ok"

@@ -9,5 +9,3 @@ class AppConfig(Config):
         if not cls._obj:
             cls._objs = super().__new__(*args, **kwargs)
         return cls._obj
-
-

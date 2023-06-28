@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 120
+exclude= git,migrations,/tests/__init__,venv
+per-file-ignores =
+    # ignore unused import and import from uncorrect places
+    link_loader.py:F401,E402,F403
+
+    #*/tests/__init__.py:F403,F401
+    #*/tests/*/__init__.py:F403,F401

@@ -1,5 +1,5 @@
 # Project special files # 
-#
+logs/
 # Django #
 *.log
 *.pot
