@@ -1,1 +1,10 @@
 TEST_VAR: hello max
+LOGGING:
+  LEVEL: INFO
+  HANDLER:
+    maxBytes: 1024 # 1MB = 1024 Bytes
+    backupCount: 10 # max backup files
+    filename: logs/app.log
+  FORMATTER:
+    format: "%(asctime)s - %(levelname)s - %(message)s"
+
