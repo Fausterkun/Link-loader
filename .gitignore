@@ -1,0 +1,62 @@
+# Project special files # 
+#
+# Django #
+*.log
+*.pot
+*.pyc
+#*.json
+__pycache__/
+*/__pycache__/
+.vscode/
+db.sqlite3
+media
+.coverage
+.idea/ 
+bin/
+lib64
+staticfiles/
+
+# build distribution and packaging files
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# venv variables
+env/
+.env
+ENV/
+venv/
+.venv
+env.bak/
+venv.bak/
+htmlcov
+pyvenv.cfg
+
+# heroku procfile file for windows emulator:
+Procfile.windows
+
+# Backup files #
+*.bak
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf

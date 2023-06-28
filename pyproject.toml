@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "dana-project"
+version = "0.1.0"
+description = "Project for links loader and status check"
+authors = ["Fausterkun <Fausterkun@gmail.com>"]
+readme = "README.md"
+packages = [{include = "dana_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
