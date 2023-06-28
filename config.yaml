@@ -6,5 +6,6 @@ LOGGING:
     backupCount: 10 # max backup files
     filename: logs/app.log
   FORMATTER:
-    format: "%(asctime)s - %(levelname)s - %(message)s"
+    # format:
+    fmt: "%(asctime)s - %(levelname)s - %(message)s"
 
