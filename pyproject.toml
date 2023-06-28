@@ -8,6 +8,9 @@ packages = [{include = "dana_project"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+flask = "2.2.3"
+pyyaml = "^6.0"
+pytest = "^7.4.0"
 
 
 [build-system]
