@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Log Monitoring</title>
+
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+            integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+            crossorigin="anonymous"></script>
+    <script>
+        var socket = io('http://' + document.domain + ':' + location.port + '/logs');
+        socket.on('connect', function () {
+            console.log('Connected to the server');
+        });
+        socket.on('new_log', function (message) {
+            console.log('New log: ' + message);
+        });
+        socket.on('message', function (message) {
+            //if not message.logs
+            var wind_elem = document.getElementById("logs");
+            var elem;
+            console.log(message.logs)
+            for (var line in message.logs) {
+                const elem = document.createElement("p");
+                const node = document.createTextNode(message.logs[line]);
+                elem.appendChild(node);
+                wind_elem.appendChild(elem);
+            }
+
+
+            console.log('New log: ' + message.logs);
+        });
+    </script>
+</head>
+<body>
+<h1>Hi max</h1>
+<div id="logs"></div>
+</body>
+</html>

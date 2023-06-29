@@ -1,0 +1,14 @@
+LOGGER:
+  ROOT:
+    LEVEL: INFO
+    handlers: file
+  HANDLERS:
+    file:
+      class: logging.RotatingFileHandler
+      maxBytes: 1024 # 1MB = 1024 Bytes
+      backupCount: 10 # max backup files
+      filename: logs/app.log
+      formatter: default
+  FORMATTERS:
+    default:
+      format: "%(asctime)s - %(levelname)s - %(message)s"

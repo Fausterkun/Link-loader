@@ -1,4 +1,3 @@
-TEST_VAR: hello max
 LOGGING:
   LEVEL: INFO
   HANDLER:
@@ -6,6 +5,5 @@ LOGGING:
     backupCount: 10 # max backup files
     filename: logs/app.log
   FORMATTER:
-    # format:
+    #format
     fmt: "%(asctime)s - %(levelname)s - %(message)s"
-
