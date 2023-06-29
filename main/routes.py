@@ -25,6 +25,15 @@ def logs():
     return render_template("logs.html")
 
 
+@bp.route("/test_logs", methods=['GET'])
+def test_logs():
+    # app.logger.exception("EXCEPTION")
+    app.logger.critical("critical")
+    app.logger.warning("warning")
+    app.logger.debug("debug")
+    app.logger.info("info")
+    return "<h1>Test log messages for all levels called. Check web log viewer</h1>"
+
 # ------------- Websocket dynamic log notifications ------------------
 
 @socketio.on("connect", namespace="/logs")

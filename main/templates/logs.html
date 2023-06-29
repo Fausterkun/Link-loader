@@ -7,22 +7,49 @@
     <style>
         body {
             padding: 20px;
+            background-color: skyblue;
         }
 
         #logs {
-            height: 300px;
+            height: 400px;
             overflow-y: scroll;
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
+            background-color: lightpink;
+            border: 1px solid black;
             padding: 10px;
         }
 
+
+        {# ----------- background params for log messages ------------ #}
         .log-entry {
+            font-size: small;
             margin-bottom: 10px;
             padding: 5px;
-            background-color: #fff;
-            border: 1px solid #ced4da;
+            background-color: white;
+            border: 1px solid black;
             border-radius: 4px;
+        }
+
+        .ERROR {
+            font-weight: bold;
+            background: darkred;
+        }
+
+        .CRITICAL {
+            font-weight: bold;
+            background: red;
+        }
+
+        .WARNING {
+            font-weight: bolder;
+            background: orange;
+        }
+
+        .INFO {
+            background: deepskyblue;
+        }
+
+        .DEBUG {
+            background: skyblue;
         }
     </style>
 </head>
@@ -53,15 +80,19 @@
         console.log('Connected to the server');
     });
 
-    socket.on('new_log', function (message) {
-        var wind_elem = document.getElementById("logs");
-        var elem = document.createElement("p");
-        elem.textContent = message.logs;
-        elem.className = "log-entry";
-        wind_elem.appendChild(elem);
 
+    const wind_elem = document.getElementById("logs");
+    socket.on('new_log', function (data) {
+        let elem = document.createElement("p");
+
+        elem.className = "log-entry";
+        elem.classList.add(data.level);
+
+        elem.textContent = data.message;
+
+        wind_elem.appendChild(elem);
         // Scroll to new added element is autoscroll checked
-        if(document.getElementById("autoscroll").checked) {
+        if (document.getElementById("autoscroll").checked) {
             elem.scrollIntoView();
         }
 
