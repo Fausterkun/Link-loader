@@ -1,8 +1,7 @@
 # from flask import render_template, request, g, redirect, url_for
-from flask import render_template
+from flask import render_template, request
 
 from main import bp, socketio  # app
-
 from . import app
 
 
@@ -31,7 +30,13 @@ def logs():
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    print("user connected")
-    # with open('logs/app'):
-    logs = ["some line 1", "some line 2"]
-    socketio.emit("message", {"logs": logs}, namespace="/logs")
+    app.logger.info("Websocket connection to /logs page")
+    # socketio.emit("new_log",  namespace="/logs")
+
+
+# @socketio.on("new_log", namespace="/logs")
+# def send_log(lines: list[str]):
+#     # print("user connected")
+#     # logs = ["some line 1", "some line 2"]
+#     # socketio.emit("new_log", {"logs": logs}, namespace="/logs")
+#     # socketio.call("new_log", data={"logs": logs}, namespace="/logs")

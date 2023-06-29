@@ -1,10 +1,11 @@
 from flask import Blueprint
 from flask_socketio import SocketIO
 
+# socketio = SocketIO(message_queue='redis://')
 socketio = SocketIO()
 bp = Blueprint("main", __name__)
 
-from app import create_app
+from .app import create_app
 
 app = create_app()
 

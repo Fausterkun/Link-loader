@@ -1,9 +1,19 @@
 LOGGING:
   LEVEL: INFO
-  HANDLER:
-    maxBytes: 1024 # 1MB = 1024 Bytes
-    backupCount: 10 # max backup files
-    filename: logs/app.log
-  FORMATTER:
-    #format
-    fmt: "%(asctime)s - %(levelname)s - %(message)s"
+  FILE:
+    LEVEL: INFO
+    HANDLER:
+      maxBytes: 1024 # 1MB = 1024 Bytes
+      backupCount: 10 # max backup files
+      filename: logs/app.log
+    FORMATTER:
+      #format
+      fmt: "%(asctime)s - %(levelname)s - %(message)s"
+
+  WS:
+    LEVEL: INFO
+    EVENT_NAME: new_log  # event name for adding a new log line at frontend
+    NAMESPACE: logs  # namespace name for socketio handler
+    FORMATTER:
+      #format
+      fmt: "%(asctime)s - %(levelname)s - %(message)s"
