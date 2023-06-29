@@ -11,9 +11,10 @@ LOGGING:
       fmt: "%(asctime)s - %(levelname)s - %(message)s"
 
   WS:
-    LEVEL: INFO
+    LEVEL: NOTSET
     EVENT_NAME: new_log  # event name for adding a new log line at frontend
     NAMESPACE: logs  # namespace name for socketio handler
     FORMATTER:
       #format
       fmt: "%(asctime)s - %(levelname)s - %(message)s"
+#      fmt: "dana i love you %(levelname)s - %(message)s"

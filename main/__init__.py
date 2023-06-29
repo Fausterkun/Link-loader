@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_socketio import SocketIO
 
 # socketio = SocketIO(message_queue='redis://')
+
 socketio = SocketIO()
 bp = Blueprint("main", __name__)
 

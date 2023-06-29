@@ -8,31 +8,29 @@ from . import app
 @bp.route("/")
 @bp.route("/index")
 def hello_world():  # put application's code here
-    app.logger.warning("Visit index ")
+    app.logger.warning("User visit index page")
     # return render_template(os.path.join(BASE_PATH, 'templates', 'index.html'))
     return render_template("index.html")
 
 
 @bp.route("/links", methods=["GET", "POST"])
 def links():
-    app.logger.debug("Visit links")
-    return "ok"
+    app.logger.info("User visit links page")
+    return "<h1>hi max</h1>"
 
 
 @bp.route("/logs", methods=["GET"])
 def logs():
-    app.logger.info("Visit logs")
+    app.logger.info("User visit logs page")
     return render_template("logs.html")
 
 
 # ------------- Websocket dynamic log notifications ------------------
 
-
 @socketio.on("connect", namespace="/logs")
 def connect():
     app.logger.info("Websocket connection to /logs page")
     # socketio.emit("new_log",  namespace="/logs")
-
 
 # @socketio.on("new_log", namespace="/logs")
 # def send_log(lines: list[str]):

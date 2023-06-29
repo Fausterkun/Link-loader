@@ -10,4 +10,5 @@ class WebsocketHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         # self.socket_obj.emit(event='new_log', data={'logs': record.getMessage()}, namespace="/logs")
-        self.socket_obj.emit(event=self.event_name, data={'logs': record.getMessage()}, namespace=self.namespace )
+        self.socket_obj.emit(event='new_log', data={'logs': self.formatter.format(record)}, namespace="/logs")
+        # self.socket_obj.emit(event=self.event_name, data={'logs': record.getMessage()}, namespace=self.namespace)

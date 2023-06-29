@@ -30,27 +30,28 @@ def _add_file_handler(app, conf: dict):
     handler_args = conf["HANDLER"]
     level = conf["LEVEL"]
 
-    log_handler = RotatingFileHandler(**handler_args)
+    handler = RotatingFileHandler(**handler_args)
     # TODO: may be refactor for all args in one call pass
-    log_handler.setLevel(level)
+    handler.setLevel(level)
 
     log_formatter = logging.Formatter(**formatter_data)
-    log_handler.setFormatter(log_formatter)
+    handler.setFormatter(log_formatter)
 
-    app.logger.addHandler(log_handler)
+    app.logger.addHandler(handler)
 
 
 def _add_ws_handler(app, socket_obj, conf):
     # handler_conf: dict = conf["HANDLER"]
     formatter_conf = conf["FORMATTER"]
     event_name = conf["EVENT_NAME"]
+    namespace = conf["NAMESPACE"]
     level = conf["LEVEL"]
 
-    websocket_handler = WebsocketHandler(socket_obj, event_name, level=level)
+    handler = WebsocketHandler(socket_obj, event_name, level=level, namespace=namespace)
     formatter = logging.Formatter(**formatter_conf)
-    websocket_handler.setFormatter(formatter)
+    handler.setFormatter(formatter)
 
-    app.logger.addHandler(websocket_handler)
+    app.logger.addHandler(handler)
 
 
 def configure_logging(app):
