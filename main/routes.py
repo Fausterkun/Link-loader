@@ -34,11 +34,13 @@ def test_logs():
     app.logger.info("info")
     return "<h1>Test log messages for all levels called. Check web log viewer</h1>"
 
+
 # ------------- Websocket dynamic log notifications ------------------
 
 @socketio.on("connect", namespace="/logs")
 def connect():
     app.logger.info("Websocket connection to /logs page")
+    # TODO: send previous log messages
     # socketio.emit("new_log",  namespace="/logs")
 
 # @socketio.on("new_log", namespace="/logs")

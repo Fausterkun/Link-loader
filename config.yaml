@@ -1,3 +1,4 @@
+LOG_PATH: &LOG_PATH logs/app.log
 LOGGING:
   LEVEL: INFO
   FILE:
@@ -5,7 +6,7 @@ LOGGING:
     HANDLER:
       maxBytes: 1024 # 1MB = 1024 Bytes
       backupCount: 10 # max backup files
-      filename: logs/app.log
+      filename: *LOG_PATH
     FORMATTER:
       #format
       fmt: "%(asctime)s - %(levelname)s - %(message)s"
@@ -17,4 +18,3 @@ LOGGING:
     FORMATTER:
       #format
       fmt: "%(asctime)s - %(levelname)s - %(message)s"
-#      fmt: "dana i love you %(levelname)s - %(message)s"

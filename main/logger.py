@@ -1,5 +1,7 @@
+import glob
 import logging
 
+# from app import BASE_PATH
 
 class WebsocketHandler(logging.Handler):
     def __init__(self, socket_obj, event_name, namespace, *args, **kwargs):
@@ -12,3 +14,7 @@ class WebsocketHandler(logging.Handler):
         # self.socket_obj.emit(event='new_log', data={'logs': record.getMessage()}, namespace="/logs")
         self.socket_obj.emit(event='new_log', data={'message': self.formatter.format(record), 'level': record.levelname}, namespace="/logs")
         # self.socket_obj.emit(event=self.event_name, data={'logs': record.getMessage()}, namespace=self.namespace)
+
+
+# def get_last_logs():
+#     log_files = sorted(glob.glob())
