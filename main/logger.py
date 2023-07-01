@@ -1,7 +1,4 @@
-import glob
-import queue
 import logging
-from main import app
 
 
 class WebsocketHandler(logging.Handler):
@@ -30,8 +27,10 @@ class LogBufferHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
         if len(self.buffer_obj) >= self.size:
             self.buffer_obj.pop(-1)
-        log = dict(level=record.levelname)
-        self.buffer_obj.append(dict(level=record.levelname, message=self.formatter.format(record)))
+        self.buffer_obj.append(
+            dict(level=record.levelname, message=self.formatter.format(record))
+        )
+
 
 # def get_last_file_logs(count: int | None = None):
 #     """ Get last logs from `"""

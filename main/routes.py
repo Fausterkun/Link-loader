@@ -1,5 +1,5 @@
 # from flask import render_template, request, g, redirect, url_for
-from flask import render_template, request
+from flask import render_template
 
 from main import bp, socketio, log_buffer  # app
 from . import app
@@ -40,7 +40,7 @@ def test_logs():
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    #app.logger.info("Websocket connection to /logs page")
+    # app.logger.info("Websocket connection to /logs page")
     logs = log_buffer
     socketio.emit(event="init_logs", data={"logs": logs}, namespace="/logs")
     # TODO: send previous log messages

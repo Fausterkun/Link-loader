@@ -1,5 +1,4 @@
 import os
-import queue
 
 import yaml
 import logging
@@ -16,19 +15,21 @@ load_dotenv(os.path.join(BASE_PATH, ".env"))
 
 
 def configure_app(app, conf_file: str = "config.yaml"):
-    """ load config from file and configure it """
+    """load config from file and configure it"""
     if not os.path.isabs(conf_file):
         conf_file = os.path.join(BASE_PATH, conf_file)
 
-    if not conf_file.endswith('.yaml'):
-        raise FileNotFoundError(f"Yaml config file not found in project directory, check that {conf_file} exist.")
+    if not conf_file.endswith(".yaml"):
+        raise FileNotFoundError(
+            f"Yaml config file not found in project directory, check that {conf_file} exist."
+        )
 
     app.config.from_file(conf_file, load=yaml.safe_load)
     configure_logging(app)
 
 
 def configure_logging(app):
-    """ Set logger level and add necessary handlers """
+    """Set logger level and add necessary handlers"""
 
     logging_conf = app.config["LOGGING"]
 
@@ -50,7 +51,7 @@ def configure_logging(app):
 
 
 def _add_file_handler(app, conf: dict):
-    """ Add rotation file log handler """
+    """Add rotation file log handler"""
     formatter_data = conf["FORMATTER"]
     handler_args = conf["HANDLER"]
     level = conf["LEVEL"]
@@ -66,7 +67,7 @@ def _add_file_handler(app, conf: dict):
 
 
 def __add_buffer_handler(app, conf):
-    """ Set buffer handler that store all new logs """
+    """Set buffer handler that store all new logs"""
     formatter_conf = conf["FORMATTER"]
     level = conf["LEVEL"]
     max_size = conf["SHOWN_DEFAULT"]
@@ -84,8 +85,8 @@ def __add_buffer_handler(app, conf):
 
 def _add_ws_handler(app, socket_obj, conf):
     """
-     Set handler for real-time notification through ws connection to all connected clients
-     """
+    Set handler for real-time notification through ws connection to all connected clients
+    """
     # handler_conf: dict = conf["HANDLER"]
     formatter_conf = conf["FORMATTER"]
     event_name = conf["EVENT_NAME"]
