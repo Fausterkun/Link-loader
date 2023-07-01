@@ -76,12 +76,26 @@
         crossorigin="anonymous"></script>
 <script>
     var socket = io('http://' + document.domain + ':' + location.port + '/logs');
+
+    const wind_elem = document.getElementById("logs");
+
     socket.on('connect', function () {
         console.log('Connected to the server');
     });
 
+    socket.on('init_logs', function (data) {
+        for (let i in data.logs.reverse()) {
+            let elem = document.createElement("p");
+            elem.className = "log-entry";
 
-    const wind_elem = document.getElementById("logs");
+            elem.classList.add(data.logs[i].level);
+            elem.textContent = data.logs[i].message;
+            wind_elem.prepend(elem)
+        }
+        if (document.getElementById("autoscroll").checked) {
+            wind_elem.lastElementChild.scrollIntoView();
+        }
+    })
     socket.on('new_log', function (data) {
         let elem = document.createElement("p");
 
