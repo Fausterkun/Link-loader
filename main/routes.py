@@ -1,7 +1,7 @@
 # from flask import render_template, request, g, redirect, url_for
 from flask import render_template, request
 
-from main import bp, socketio  # app
+from main import bp, socketio, log_buffer  # app
 from . import app
 
 
@@ -25,7 +25,7 @@ def logs():
     return render_template("logs.html")
 
 
-@bp.route("/test_logs", methods=['GET'])
+@bp.route("/test_logs", methods=["GET"])
 def test_logs():
     # app.logger.exception("EXCEPTION")
     app.logger.critical("critical")
@@ -34,16 +34,21 @@ def test_logs():
     app.logger.info("info")
     return "<h1>Test log messages for all levels called. Check web log viewer</h1>"
 
+
 # ------------- Websocket dynamic log notifications ------------------
+
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    app.logger.info("Websocket connection to /logs page")
+    #app.logger.info("Websocket connection to /logs page")
+    logs = log_buffer
+    socketio.emit(event="init_logs", data={"logs": logs}, namespace="/logs")
+    # TODO: send previous log messages
     # socketio.emit("new_log",  namespace="/logs")
 
-# @socketio.on("new_log", namespace="/logs")
-# def send_log(lines: list[str]):
-#     # print("user connected")
-#     # logs = ["some line 1", "some line 2"]
-#     # socketio.emit("new_log", {"logs": logs}, namespace="/logs")
-#     # socketio.call("new_log", data={"logs": logs}, namespace="/logs")
+    # @socketio.on("new_log", namespace="/logs")
+    # def send_log(lines: list[str]):
+    #     # print("user connected")
+    #     # logs = ["some line 1", "some line 2"]
+    #     # socketio.emit("new_log", {"logs": logs}, namespace="/logs")
+    #     # socketio.call("new_log", data={"logs": logs}, namespace="/logs")
