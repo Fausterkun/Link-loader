@@ -7,9 +7,16 @@ all:
 	@echo "black				- run black for our code"
 	@echo "log_clear			- delete all files in logs/ dir"
 
-run:
+run: redis 
 	python -m link_loader
 
+redis:
+	docker stop flask_redis || true
+	docker run \
+	-d \
+	--rm \
+	--name=flask_redis \
+	-p 6379:6379 redis
 test: 
 	pytest .
 

@@ -16,7 +16,7 @@ python-dotenv = "^1.0.0"
 gunicorn = "^20.1.0"
 redis = "^4.6.0"
 gevent = "^22.10.2"
-gevent-websocket = "^0.10.1"
+eventlet = "^0.33.3"
 
 
 [tool.poetry.group.DEV.dependencies]
