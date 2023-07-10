@@ -1,7 +1,7 @@
 # from flask import render_template, request, g, redirect, url_for
 from flask import render_template
 
-from main import bp, socketio, log_buffer  # app
+from linker_app import bp, socketio, log_buffer  # app
 from . import app
 
 

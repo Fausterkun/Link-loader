@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+#  db:
+#    image: postgres:15.3-alpine
+#    volumes:
+#      - db_data:/var/lib/postgresql/data
+#    env_file:
+#      - ./.env
+#    restart: always
+#
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    restart: always
+
+  app:
+    build: .
+    container_name: linker_app
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+#    depends_on:
+#      - db
+    networks:
+      - app_network
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      - redis
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d  # TODO: linker_app.conf must be in nginx folder at root
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+    depends_on:
+      - app
+    networks:
+      - app_network
+    restart: always
+
+volumes:
+#  db_data:
+  static_value:
+  media_value:
+
+networks:
+  app_network:
+    driver: bridge

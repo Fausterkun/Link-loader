@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import Flask
 from dotenv import load_dotenv
 
-from main.settings import configure_app
+from linker_app.settings import configure_app
 
 # Project root path
 

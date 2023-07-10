@@ -6,9 +6,9 @@ import logging
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
-from main import socketio, log_buffer
+from linker_app import socketio, log_buffer
 from dotenv import load_dotenv
-from main.logger import WebsocketHandler, LogBufferHandler
+from linker_app.logger import WebsocketHandler, LogBufferHandler
 
 BASE_PATH = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_PATH, ".env"))
