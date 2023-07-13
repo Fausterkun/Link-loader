@@ -2,6 +2,8 @@
 
 all:
 	@echo "run				- run web app"
+	@echo "run-all 			- app all app due docker compose"
+	@echo "run redis 		- up redis container at 6379 port"
 	@echo "test				- run testing"
 	@echo "lint				- run linter checker"
 	@echo "black				- run black for our code"
@@ -9,6 +11,11 @@ all:
 
 run: 
 	python -m link_loader
+
+run-all:
+	docker stop linker_app || true
+	docker stop flask_redis || true
+	docker compose up --build 
 
 docker:
 	docker stop linker_app || true
@@ -18,9 +25,6 @@ docker:
 		-p 5000:5000 \
 		-p 6379:6379 linker_app
 
-docker-build:
-	docker build -t linker_app . 
-
 redis:
 	docker stop flask_redis || true
 	docker run \
@@ -28,6 +32,7 @@ redis:
 	--rm \
 	--name=flask_redis \
 	-p 6379:6379 redis
+
 test: 
 	pytest .
 
