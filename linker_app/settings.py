@@ -43,7 +43,7 @@ def configure_logging(app):
 
     # add buffer handler for store all new log in memory
     buffer_conf = logging_conf["BUFFER"]
-    __add_buffer_handler(app, buffer_conf)
+    _add_buffer_handler(app, buffer_conf)
 
     # add websocket handler for realtime logs monitoring
     ws_conf = logging_conf["WS"]
@@ -66,7 +66,7 @@ def _add_file_handler(app, conf: dict):
     app.logger.addHandler(handler)
 
 
-def __add_buffer_handler(app, conf):
+def _add_buffer_handler(app, conf):
     """Set buffer handler that store all new logs"""
     formatter_conf = conf["FORMATTER"]
     level = conf["LEVEL"]

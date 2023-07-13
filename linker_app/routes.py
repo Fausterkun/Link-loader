@@ -1,8 +1,10 @@
 # from flask import render_template, request, g, redirect, url_for
-from flask import render_template
+from flask import render_template, request
+from flask_socketio import join_room, leave_room
 
 from linker_app import bp, socketio, log_buffer  # app
 from . import app
+from . import counter
 
 
 @bp.route("/")
@@ -21,7 +23,10 @@ def links():
 
 @bp.route("/logs", methods=["GET"])
 def logs():
-    app.logger.info("User visit logs page")
+    # app.logger.info("User visit logs page")
+    global counter
+    app.logger.info(str(counter))
+    counter += 1
     return render_template("logs.html")
 
 
@@ -41,8 +46,19 @@ def test_logs():
 @socketio.on("connect", namespace="/logs")
 def connect():
     # app.logger.info("Websocket connection to /logs page")
-    logs = log_buffer
-    socketio.emit(event="init_logs", data={"logs": logs}, namespace="/logs")
+    room = "room1"
+    # join_room(room)
+    logs = log_buffer.get_all()
+    if not getattr(request, "sid"):
+        app.logger.warning(
+            'Try ws "connect" event without sid param at request. May be some parser.'
+        )
+    socketio.emit(
+        event="init_logs",
+        to=getattr(request, "sid", None),
+        data={"logs": logs},
+        namespace="/logs",
+    )
     # TODO: send previous log messages
     # socketio.emit("new_log",  namespace="/logs")
 
