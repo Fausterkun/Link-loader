@@ -1,10 +1,7 @@
-# from flask import render_template, request, g, redirect, url_for
 from flask import render_template, request
-from flask_socketio import join_room, leave_room
 
-from linker_app import bp, socketio, log_buffer  # app
-from . import app
-from . import counter
+from linker_app import app, bp, socketio, log_buffer,\
+    counter # noqa F401
 
 
 @bp.route("/")
@@ -23,7 +20,6 @@ def links():
 
 @bp.route("/logs", methods=["GET"])
 def logs():
-    # app.logger.info("User visit logs page")
     global counter
     app.logger.info(str(counter))
     counter += 1
@@ -45,26 +41,12 @@ def test_logs():
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    # app.logger.info("Websocket connection to /logs page")
-    room = "room1"
-    # join_room(room)
+    app.logger.info("Websocket connection to /logs page")
+    # collect all previous logs
     logs = log_buffer.get_all()
-    if not getattr(request, "sid"):
-        app.logger.warning(
-            'Try ws "connect" event without sid param at request. May be some parser.'
-        )
     socketio.emit(
         event="init_logs",
         to=getattr(request, "sid", None),
         data={"logs": logs},
         namespace="/logs",
     )
-    # TODO: send previous log messages
-    # socketio.emit("new_log",  namespace="/logs")
-
-    # @socketio.on("new_log", namespace="/logs")
-    # def send_log(lines: list[str]):
-    #     # print("user connected")
-    #     # logs = ["some line 1", "some line 2"]
-    #     # socketio.emit("new_log", {"logs": logs}, namespace="/logs")
-    #     # socketio.call("new_log", data={"logs": logs}, namespace="/logs")

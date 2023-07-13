@@ -21,7 +21,6 @@ bp = Blueprint("linker_app", __name__)
 from .app import create_app
 
 app = create_app()
-app.secret_key = "ad21safsblmwefwofdkppomkqejcks"
 
 socketio.init_app(app)  # , engineio_logger=app.logger)
 from . import routes

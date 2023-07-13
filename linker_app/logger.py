@@ -1,28 +1,6 @@
 import logging
 
 
-# class LogEvent:
-#     """ Obj for represent log event for web view """
-#
-#     def __init__(self, level: str | int, message: str):
-#         self._level = level
-#         self._message = message
-#
-#     @property
-#     def message(self):
-#         return self._message
-#
-#     @property
-#     def level(self):
-#         return self._level
-#
-#     def __repr__(self):
-#         return f"Log event object: {self._level=} {self._message=}"
-#
-#     def __str__(self):
-#         return self.message
-
-
 class LogBufferLocal:
     def __init__(self, max_size: int):
         # TODO: create reading from log files for init logs after app restart
@@ -70,12 +48,3 @@ class LogBufferHandler(logging.Handler):
         self._buffer_obj.add_message(
             dict(level=record.levelname, message=self.formatter.format(record))
         )
-
-
-# def get_last_file_logs(count: int | None = None):
-#     """ Get last logs from `"""
-#     # init from config
-#     if not count:
-#         count = logging_conf["SHOWN_DEFAULT"]
-#
-#     log_files = sorted(app.logger)

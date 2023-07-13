@@ -1,3 +1,4 @@
+SECRET_KEY: "hack-my-secret-key"
 LOG_PATH: &LOG_PATH logs/app.log
 LOGGING:
   LEVEL: INFO
