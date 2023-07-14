@@ -1,4 +1,5 @@
-# Project special files # 
+# Project special files #
+!/sub_project/
 logs/
 # Django #
 *.log

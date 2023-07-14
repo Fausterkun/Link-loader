@@ -1,12 +1,12 @@
 from flask import render_template, request
 
-from linker_app import app, bp, socketio, log_buffer,\
-    counter # noqa F401
+from linker_app import app, bp, socketio, log_buffer, \
+    counter  # noqa F401
 
 
 @bp.route("/")
 @bp.route("/index")
-def hello_world():  # put application's code here
+def index():  # put application's code here
     app.logger.warning("User visit index page")
     # return render_template(os.path.join(BASE_PATH, 'templates', 'index.html'))
     return render_template("index.html")
