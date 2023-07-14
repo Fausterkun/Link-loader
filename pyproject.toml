@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "main"
+name = "linker_app"
 version = "0.1.0"
 description = "Project for links loader and status check"
 authors = ["Fausterkun <Fausterkun@gmail.com>"]
@@ -17,6 +17,9 @@ gunicorn = "^20.1.0"
 redis = "^4.6.0"
 gevent = "^22.10.2"
 eventlet = "^0.33.3"
+psycopg-binary = "^3.1.9"
+sqlalchemy = "^2.0.18"
+alembic = "^1.11.1"
 
 
 [tool.poetry.group.DEV.dependencies]
