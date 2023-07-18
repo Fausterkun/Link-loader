@@ -18,3 +18,8 @@ def create_app(conf_filename: str = "config.yaml"):
     configure_app(app, conf_filename)
 
     return app
+
+
+def init_socketio(socketio, app):
+    configs = app.config["SOCKETIO"]
+    socketio.init_app(app, **configs)
