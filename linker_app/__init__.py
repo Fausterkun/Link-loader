@@ -1,5 +1,5 @@
-import eventlet
-eventlet.monkey_patch()
+# import eventlet
+# eventlet.monkey_patch()
 
 from flask import Blueprint
 from flask_socketio import SocketIO
@@ -15,6 +15,7 @@ socketio = SocketIO()
 #     engineio_logger=True,
 #     cors_allowed_origins="*",
 # )
+#TODO: update to setup this from settings
 log_buffer = LogBufferLocal(max_size=20)
 counter = 0
 bp = Blueprint("linker_app", __name__)

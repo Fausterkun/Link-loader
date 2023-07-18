@@ -15,7 +15,7 @@ run:
 run-all:
 	docker stop linker_app || true
 	docker stop flask_redis || true
-	docker compose up --build 
+	docker compose up --build -d 
 
 docker:
 	docker stop linker_app || true
