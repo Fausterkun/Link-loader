@@ -23,17 +23,17 @@ services:
   app:
     build: .
     container_name: linker_app
+    env_file:
+      - ./.env
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
-    networks:
-      - app_network
-    env_file:
-      - ./.env
-    restart: always
     depends_on:
       - redis
       - db
+    networks:
+      - app_network
+    restart: always
 
   nginx:
     image: nginx:1.25-alpine

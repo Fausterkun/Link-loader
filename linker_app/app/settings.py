@@ -19,7 +19,9 @@ def init_socketio(socketio, app, **kwargs):
     configs = app.config["SOCKETIO"]
     # update config vars from cmd kwargs
     configs.update(kwargs)
+    print(configs)
     socketio.init_app(app, **configs)
+    print(app.config)
 
 
 def configure_app(app, conf_file: str = "config.yaml"):

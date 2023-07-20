@@ -28,12 +28,10 @@ group.add_argument(
 )
 
 group = parser.add_argument_group("Socketio options")
-group.add_argument(
-    "--message-queue", default="redis://", help="Url for message queue volume"
-)
-group.add_argument(
-    "--channel", default="linker_socketio", help="Channel name for message queue"
-)
+group.add_argument( "--message-queue", default="redis://", help="Url for message queue volume" )
+group.add_argument( "--channel", default="linker_socketio", help="Channel name for message queue" )
+group.add_argument( "--cors-allowed-origins", help="Allowed cors for app to connect" )
+
 
 def main():
     args = parser.parse_args()
@@ -52,6 +50,9 @@ def main():
         message_queue=args.message_queue,
         port=args.port,
         channel=args.channel,
+        cors_allowed_origins=args.cors_allowed_origins,
+        debug=True,
+        engineio_logger=True,
     )
     app.register_blueprint(bp)
 

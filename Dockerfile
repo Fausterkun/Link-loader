@@ -59,5 +59,9 @@ RUN poetry install --no-interaction --no-ansi
 EXPOSE 5000
 
 #RUN chmod +x docker-entrypoint.sh
-CMD ["poetry", "run" ,"app", "--message-queue", "redis://redis:6379/", "--host", "0.0.0.0"]
-#CMD ["python3", "linker_app", "--message-queue", "redis://redis:6379/", "--host", "0.0.0.0", "--port", "5000", "--cors-allowd-origins" , "*"]
+CMD ["poetry", "run" ,"app", \
+       "--host", "0.0.0.0", \
+       "--port", "5000", \
+       "--cors-allowed-origins", "*", \
+       "--message-queue", "redis://redis:6379/", \
+       "--channel", "linker_socketio"]
