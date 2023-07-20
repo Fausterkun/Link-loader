@@ -1,7 +1,6 @@
 from flask import render_template, request
 
-from linker_app import app, bp, socketio, log_buffer, \
-    counter  # noqa F401
+from . import app, bp, socketio, log_buffer, counter  # noqa F401
 
 
 @bp.route("/")
@@ -43,6 +42,7 @@ def test_logs():
 def connect():
     app.logger.info("Websocket connection to /logs page")
     # collect all previous logs
+    # logs = app.log_buffer.get_all()
     logs = log_buffer.get_all()
     socketio.emit(
         event="init_logs",

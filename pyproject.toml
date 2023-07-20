@@ -20,12 +20,18 @@ alembic = "^1.11.1"
 eventlet = "^0.33.3"
 cryptography = "^41.0.2"
 pyyaml = "^6.0.1"
+configargparse = "^1.5.5"
 
 
 [tool.poetry.group.DEV.dependencies]
 flake8 = "^6.0.0"
 black = "^23.3.0"
 
+[tool.poetry.scripts]
+app = "linker_app.app.__main__:main"
+db = "linker_app.db.__main__:main"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

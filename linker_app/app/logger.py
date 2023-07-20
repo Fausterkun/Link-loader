@@ -20,6 +20,14 @@ class LogBufferLocal:
     def get_all(self):
         return self._buffer
 
+    def update_size(self, new_size: int):
+        if new_size < self._max_size:
+            self._buffer = self._buffer[-new_size:]
+
+        self._max_size = new_size
+        if self._max_size < 1:
+            raise ValueError("max size must have value more than 0")
+
 
 class WebsocketHandler(logging.Handler):
     def __init__(self, socket_obj, event_name, namespace, *args, **kwargs):

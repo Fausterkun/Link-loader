@@ -1,11 +1,9 @@
 SECRET_KEY: "hack-my-secret-key"
 LOG_PATH: &LOG_PATH logs/app.log
 SOCKETIO:
-  # for docker-compose:
-#  message_queue: "redis://redis:6379/"
-  # for single app usage:
-  message_queue: "redis://"
+  message_queue: "redis://redis:6379/"
   channel: "linker_socketio"
+
   logger: true
   engineio_logger: true
   cors_allowed_origins: "*"

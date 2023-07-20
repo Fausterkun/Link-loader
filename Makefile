@@ -1,6 +1,7 @@
 .PHONY: all run test lint black log_clear
 
 all:
+	@echo "devenv 			- create and setup development virtual env using poetry" 
 	@echo "run				- run web app"
 	@echo "run-all 			- app all app due docker compose"
 	@echo "run redis 		- up redis container at 6379 port"
@@ -9,13 +10,22 @@ all:
 	@echo "black				- run black for our code"
 	@echo "log_clear			- delete all files in logs/ dir"
 
+devenv:
+	poetry install  && poetry update
+
 run: 
-	python -m link_loader
+	poetry run app # TODO: continue
+
+clean:
+	rm -rf dist/
+
+sdidst:
+	poetry build 
 
 run-all:
 	docker stop linker_app || true
 	docker stop flask_redis || true
-	docker compose up --build -d 
+	docker compose up --build  #-d
 
 docker:
 	docker stop linker_app || true

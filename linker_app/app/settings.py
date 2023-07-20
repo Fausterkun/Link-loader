@@ -4,14 +4,22 @@ import yaml
 import logging
 
 from pathlib import Path
+
+# from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
 
-from linker_app import socketio, log_buffer
-from dotenv import load_dotenv
-from linker_app.logger import WebsocketHandler, LogBufferHandler
+from . import socketio, log_buffer
+from .logger import WebsocketHandler, LogBufferHandler
 
-BASE_PATH = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_PATH, ".env"))
+BASE_PATH = Path(__file__).resolve().parent.parent.parent
+# load_dotenv(os.path.join(BASE_PATH, "../../.env"))
+
+
+def init_socketio(socketio, app, **kwargs):
+    configs = app.config["SOCKETIO"]
+    # update config vars from cmd kwargs
+    configs.update(kwargs)
+    socketio.init_app(app, **configs)
 
 
 def configure_app(app, conf_file: str = "config.yaml"):
@@ -81,6 +89,7 @@ def _add_buffer_handler(app, conf):
     handler.setFormatter(formatter)
 
     app.logger.addHandler(handler)
+    app.logger_buffer = log_buffer
 
 
 def _add_ws_handler(app, socket_obj, conf):
