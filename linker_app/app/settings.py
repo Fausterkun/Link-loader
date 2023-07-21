@@ -12,7 +12,6 @@ from . import socketio, log_buffer
 from .logger import WebsocketHandler, LogBufferHandler
 
 BASE_PATH = Path(__file__).resolve().parent.parent.parent
-# load_dotenv(os.path.join(BASE_PATH, "../../.env"))
 
 
 def init_socketio(socketio, app, **kwargs):
@@ -22,7 +21,7 @@ def init_socketio(socketio, app, **kwargs):
     socketio.init_app(app, **configs)
 
 
-def configure_app(app, conf_file: str = "config.yaml"):
+def configure_app(app, conf_file: str = "config.yaml", args=None):
     """load config from file and configure it"""
     if not os.path.isabs(conf_file):
         conf_file = os.path.join(BASE_PATH, conf_file)
@@ -33,10 +32,10 @@ def configure_app(app, conf_file: str = "config.yaml"):
         )
 
     app.config.from_file(conf_file, load=yaml.safe_load)
-    configure_logging(app)
+    configure_logging(app, args)
 
 
-def configure_logging(app):
+def configure_logging(app, args=None):
     """Set logger level and add necessary handlers"""
 
     logging_conf = app.config["LOGGING"]
@@ -51,11 +50,14 @@ def configure_logging(app):
 
     # add buffer handler for store all new log in memory
     buffer_conf = logging_conf["BUFFER"]
-    _add_buffer_handler(app, buffer_conf)
+    # add log buffer obj to handler and configure it
+    _add_buffer_handler(app, log_buffer, buffer_conf, args)
 
     # add websocket handler for realtime logs monitoring
     ws_conf = logging_conf["WS"]
     _add_ws_handler(app, socketio, ws_conf)
+
+    # config log buffer:
 
 
 def _add_file_handler(app, conf: dict):
@@ -74,20 +76,29 @@ def _add_file_handler(app, conf: dict):
     app.logger.addHandler(handler)
 
 
-def _add_buffer_handler(app, conf):
-    """Set buffer handler that store all new logs"""
+def _add_buffer_handler(app, buffer_obj, conf, args):
+    """Setup buffer obj and set handler that store all new logs"""
     formatter_conf = conf["FORMATTER"]
     level = conf["LEVEL"]
-    max_size = conf["SHOWN_DEFAULT"]
 
-    # use common dynamic list for buffer
+    # setup max buffer size from args or config
+    max_size = 50  # default value
+    # re-assign if value in args or conf
+    if args.log_buffer_size:
+        max_size = args.log_buffer_size
+    elif "LOG_BUFFER_SIZE" in conf:
+        max_size = conf["LOG_BUFFER_SIZE"]
+    log_buffer.update_size(max_size)
 
-    handler = LogBufferHandler(buffer_obj=log_buffer, max_size=max_size)
+    # create handler
+    handler = LogBufferHandler(buffer_obj=buffer_obj)
     handler.setLevel(level)
 
+    # setup formatter for handler
     formatter = logging.Formatter(**formatter_conf)
     handler.setFormatter(formatter)
 
+    # add handler to loger
     app.logger.addHandler(handler)
     app.logger_buffer = log_buffer
 

@@ -1,7 +1,7 @@
 import logging
 
 
-class LogBufferLocal:
+class LogBuffer:
     def __init__(self, max_size: int):
         # TODO: create reading from log files for init logs after app restart
         self._max_size = max_size
@@ -47,10 +47,9 @@ class WebsocketHandler(logging.Handler):
 
 
 class LogBufferHandler(logging.Handler):
-    def __init__(self, buffer_obj: LogBufferLocal, max_size, *args, **kwargs):
+    def __init__(self, buffer_obj: LogBuffer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._buffer_obj = buffer_obj
-        self.size = max_size
 
     def emit(self, record: logging.LogRecord) -> None:
         self._buffer_obj.add_message(

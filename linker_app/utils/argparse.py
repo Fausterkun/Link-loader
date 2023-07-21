@@ -5,7 +5,7 @@ def validate(type: callable, constrain: callable):
     def wrapper(value):
         value = type(value)
         if not constrain(value):
-            raise ArgumnetTypeError
+            raise ArgumentTypeError
         return value
 
     return wrapper

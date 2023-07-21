@@ -21,7 +21,7 @@ LOGGING:
       fmt: "%(asctime)s - %(levelname)s - %(message)s"
 
   BUFFER:
-    SHOWN_DEFAULT: 50  # count of last log messages stored in buffer
+    LOG_BUFFER_SIZE: 50  # count of last log messages stored in buffer
     LEVEL: *FILE_LEVEL
     FORMATTER:
       #format

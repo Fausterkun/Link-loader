@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from tests.utils import client
+from .utils import client  # noqa: F401
 
 
 def test_logs(client):

@@ -14,7 +14,7 @@ devenv:
 	poetry install  && poetry update
 
 run: 
-	poetry run app # TODO: continue
+	poetry run app 
 
 clean:
 	rm -rf dist/
@@ -44,7 +44,7 @@ redis:
 	-p 6379:6379 redis
 
 test: 
-	pytest .
+	pytest --disable-warnings
 
 lint:
 	flake8 .

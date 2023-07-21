@@ -1,6 +1,5 @@
 import pytest
-
-from app import app
+from linker_app.app import app
 
 
 @pytest.fixture
