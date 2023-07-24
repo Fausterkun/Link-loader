@@ -1,6 +1,4 @@
-from app import app, socketio
+# from linker_app.app import app, socketio
 
-if __name__ == "__main__":
-    app.logger.info(f"App {app.name} started.")
-    socketio.run(app, host="0.0.0.0")
-    app.logger.info("app closed")
+from linker_app.db import app
+

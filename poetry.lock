@@ -375,6 +375,22 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "flask-migrate"
+version = "4.0.4"
+description = "SQLAlchemy database migrations for Flask applications using Alembic."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "Flask-Migrate-4.0.4.tar.gz", hash = "sha256:73293d40b10ac17736e715b377e7b7bde474cb8105165d77474df4c3619b10b3"},
+    {file = "Flask_Migrate-4.0.4-py3-none-any.whl", hash = "sha256:77580f27ab39bc68be4906a43c56d7674b45075bc4f883b1d0b985db5164d58f"},
+]
+
+[package.dependencies]
+alembic = ">=1.9.0"
+Flask = ">=0.9"
+Flask-SQLAlchemy = ">=1.0"
+
+[[package]]
 name = "flask-socketio"
 version = "5.3.4"
 description = "Socket.IO integration for Flask applications"
@@ -388,6 +404,21 @@ files = [
 [package.dependencies]
 Flask = ">=0.9"
 python-socketio = ">=5.0.2"
+
+[[package]]
+name = "flask-sqlalchemy"
+version = "3.0.3"
+description = "Add SQLAlchemy support to your Flask application."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "Flask-SQLAlchemy-3.0.3.tar.gz", hash = "sha256:2764335f3c9d7ebdc9ed6044afaf98aae9fa50d7a074cef55dde307ec95903ec"},
+    {file = "Flask_SQLAlchemy-3.0.3-py3-none-any.whl", hash = "sha256:add5750b2f9cd10512995261ee2aa23fab85bd5626061aa3c564b33bb4aa780a"},
+]
+
+[package.dependencies]
+Flask = ">=2.2"
+SQLAlchemy = ">=1.4.18"
 
 [[package]]
 name = "greenlet"
@@ -1108,4 +1139,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4eeae3653ab70b7fca03da193fad9230520e8deb97185b86bdc194eb55c31e17"
+content-hash = "597c5ba6312acb90e51ba774f5b4eb7faa6a963e8305f0d53c60ceac6c5ecc2d"

@@ -7,7 +7,7 @@ from linker_app.app.settings import configure_app, init_socketio
 from linker_app.utils.argparse import positive_int
 
 # Prefix for aut setup config from env
-ENV_VAR_PREFIX = "LINKER_APP_"
+ENV_VAR_PREFIX = "LINKER_"
 
 parser = ArgumentParser(
     auto_env_var_prefix=ENV_VAR_PREFIX,
@@ -60,7 +60,6 @@ def main():
         debug=True,
         engineio_logger=True,
     )
-    # app.register_blueprint(bp)
 
     app.logger.info(f"App {app.name} started.")
     socketio.run(app, host=args.host, port=args.port)

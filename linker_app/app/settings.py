@@ -32,7 +32,8 @@ def configure_app(app, conf_file: str = "config.yaml", args=None):
         )
 
     app.config.from_file(conf_file, load=yaml.safe_load)
-    configure_logging(app, args)
+    if hasattr(app.config, "LOGGING"):
+        configure_logging(app, args)
 
 
 def configure_logging(app, args=None):

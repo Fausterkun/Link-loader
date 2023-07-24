@@ -1,12 +1,14 @@
 SECRET_KEY: "hack-my-secret-key"
 LOG_PATH: &LOG_PATH logs/app.log
+SQLALCHEMY_DATABASE_URI: "postgresql://user:test@localhost/test_db"
 SOCKETIO:
   message_queue: "redis://"
   channel: "linker_socketio"
 #  logger: true
 #  engineio_logger: true
 #  cors_allowed_origins: "*"
-
+DB:
+  url: 'postgresql://user:test@localhost/test_db'
 LOGGING:
   LEVEL: INFO
 
