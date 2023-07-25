@@ -1,22 +1,32 @@
 import uuid
 from enum import Enum
 
-from sqlalchemy.dialects.postgresql import JSON, UUID
-from sqlalchemy.orm import relationship
+# from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.sql import func
-from sqlalchemy import (MetaData, Column, Table, ForeignKey, ForeignKeyConstraint,
-                        Date, Integer, String)
-from app import db
+from sqlalchemy import (
+    MetaData,
+    Column,
+    Table,
+    ForeignKey,
+    Enum as PgEnum,
+    Integer,
+    String,
+    UUID,
+    JSON,
+    LargeBinary,
+    DateTime,
+    Boolean,
+)
 
 convention = {
-    'all_column_names': lambda constraint, table: '_'.join([
-        column.name for column in constraint.columns.values()
-    ]),
-    'ix': 'ix__%(table_name)s__%(all_column_names)s',
-    'uq': 'uq__%(table_name)s__%(all_column_names)s',
-    'ck': 'ck__%(table_name)s__%(constraint_name)s',
-    'fk': 'fk__%(table_name)s__%(all_column_names)s__%(referred_table_name)s',
-    'pk': 'pk__%(table_name)s'
+    "all_column_names": lambda constraint, table: "_".join(
+        [column.name for column in constraint.columns.values()]
+    ),
+    "ix": "ix__%(table_name)s__%(all_column_names)s",
+    "uq": "uq__%(table_name)s__%(all_column_names)s",
+    "ck": "ck__%(table_name)s__%(constraint_name)s",
+    "fk": "fk__%(table_name)s__%(all_column_names)s__%(referred_table_name)s",
+    "pk": "pk__%(table_name)s",
 }
 metadata = MetaData(naming_convention=convention)
 
@@ -27,51 +37,47 @@ class EventType(Enum):
     RESOURCE_DELETED = "resource_deleted"
     PHOTO_ADDED = "photo_added"
 
-web_resourse_table =
 
-class WebResource(PaginationMixin, db.Model):
-    """Model for urls."""
+web_resources = Table(
+    "web_resources",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("uuid", UUID, default=str(uuid.uuid4()), index=True),
+    Column("full_url", String, nullable=False, unique=True, index=True),
+    Column("protocol", String, nullable=False),
+    Column("domain", String, nullable=False),
+    Column("domain_zone", String, nullable=False, index=True),
+    Column("url_path", String),
+    Column("query_params", JSON),
+    Column("unavailable_count", Integer, default=0),
+    Column("screenshot", LargeBinary, nullable=True),
+)
 
-    id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(UUID(as_uuid=True), default=uuid.uuid4, index=True)
-    full_url = db.Column(db.String, nullable=False, unique=True, index=True)
-    protocol = db.Column(db.String, nullable=False)
-    domain = db.Column(db.String, nullable=False)
-    domain_zone = db.Column(db.String, nullable=False, index=True)
-    url_path = db.Column(db.String)
-    query_params = db.Column(JSON)
-    unavailable_count = db.Column(db.Integer, default=0)
-    screenshot = db.Column(db.LargeBinary, nullable=True)
-    status_codes = relationship("WebResourceStatus", back_populates="resource")
-    news_feed_items = relationship("NewsFeedItem", back_populates="resource")
+web_resource_statuses = Table(
+    "web_resource_statuses",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("resource_id", Integer, ForeignKey("web_resources.id")),
+    Column("status_code", Integer, nullable=True),
+    Column("request_time", DateTime(timezone=True), server_default=func.now()),
+    Column("is_available", Boolean),
+)
 
+file_processing_requests = Table(
+    "file_processing_requests",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("total_urls", Integer, nullable=True, default=None),
+    Column("processed_urls", Integer, nullable=True, default=None),
+    Column("errors", Integer, nullable=True, default=None),
+    Column("is_finished", Boolean, default=False),
+)
 
-class WebResourceStatus(db.Model):
-    """Model for statuses of Web resources."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    resource_id = db.Column(db.Integer, db.ForeignKey(WebResource.id))
-    status_code = db.Column(db.Integer, nullable=True)
-    request_time = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    is_available = db.Column(db.Boolean)
-    resource = relationship("WebResource", back_populates="status_codes", lazy="joined")
-
-
-class FileProcessingRequest(db.Model):
-    """Model for requests for processing URLs from file. Tracked by Celery."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    total_urls = db.Column(db.Integer, nullable=True, default=None)
-    processed_urls = db.Column(db.Integer, nullable=True, default=None)
-    errors = db.Column(db.Integer, nullable=True, default=None)
-    is_finished = db.Column(db.Boolean, default=False)
-
-
-class NewsFeedItem(db.Model):
-    """Model for news feed items."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    event_type = db.Column(db.Enum(EventType), nullable=False)
-    resource_id = db.Column(db.Integer, db.ForeignKey(WebResource.id))
-    resource = relationship("WebResource", back_populates="news_feed_items")
-    timestamp = db.Column(db.DateTime(timezone=True), server_default=func.now())
+news_feed_items = Table(
+    "news_feed_items",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("event_type", PgEnum(EventType, name="event_type"), nullable=False),
+    Column("resource_id", Integer, ForeignKey("web_resources.id")),
+    Column("timestamp", DateTime(timezone=True), server_default=func.now()),
+)
