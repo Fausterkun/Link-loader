@@ -1,4 +1,4 @@
-# Link loader
+# Link loader WIP (Work in progress)
 
 Project for add/store/delete and check link availability.
 ---
@@ -13,8 +13,8 @@ Project for add/store/delete and check link availability.
 - [Testing](#testing)
 - [Linting](#linting)
 
+---
 # Getting Started
-
 ## Prerequisites
 
 - Python 3.9 or higher
@@ -63,8 +63,29 @@ poetry run app [-h] [--config-file CONFIG_FILE] [--host HOST] [--port PORT] [--m
 # build and run app and all necessary containers using docker-compose
 make run-all 
 ```
+
+---
 # Endpoints
-WIP
+WIP (Work in progress)
+- ## Api endpoints:
+  - [ ] `api/links [POST][zip file]` -> return parse status and parse links in background 
+  - [ ] `api/links [POST][uuid, pic]` -> safe to db  
+  - [ ] `api/links [POST][str link]` -> safe to db and return uuid or error 
+  - [ ] `api/links [GET]` -> return all links
+    - [ ] add pagination 
+  - [ ] `api/links [GET][domain|id|uuid]` -> return info about link with domain/id/uuid
+  - [ ] `api/logs [GET]`  - return NUM lines from logs
+- ## App endpoints:
+  - [ ] `/links [GET]` -> return all links
+    - [ ] add pagination 
+  - [ ] `/links [POST][zip file]` -> return parse status and parse links in background
+  - [ ] `/links [POST][uuid, pic]` -> safe to db
+  - [ ] `/links [POST][str link]` -> safe to db and return uuid or error
+  - [ ] `/links [GET][domain|id|uuid]` -> return info about link with domain/id/uuid
+    - [ ] add pagination
+  - [x] `/logs [GET]`  - return NUM lines from logs
+  - [x] `/logs` - create ws connection with realtime log update
+---
 # Testing
 For run test, ensure you install dev dependencies and run `make test`
 ```bash 
@@ -77,7 +98,7 @@ poetry shell
 # run tests
 make test
 ```
-
+---
 # Linting
 For run linting (using flake8), ensure you install dev dependencies and run `make lint`
 ```bash 
