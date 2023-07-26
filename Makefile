@@ -11,7 +11,7 @@ all:
 	@echo "log_clear			- delete all files in logs/ dir"
 
 devenv:
-	poetry install  && poetry update
+	poetry install --with=DEV  && poetry update
 
 run: 
 	poetry run app 
