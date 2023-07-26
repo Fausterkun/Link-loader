@@ -50,7 +50,7 @@ but if you want to install it locally and setup url to database or message-queue
 use follow [local](#running-local) installation option instruction.
 
 
-#### Running local:
+- #### Running local:
 In that way you can setup arguments as you want
 ```bash
 # use -h flag for see help 
@@ -58,19 +58,13 @@ poetry run app [-h] [--config-file CONFIG_FILE] [--host HOST] [--port PORT] [--m
            [--cors-allowed-origins CORS_ALLOWED_ORIGINS] [--log-buffer-size LOG_BUFFER_SIZE]
 ```
 
-- Run app with redis and postgres run in containers:
-```bash
-# Run app locally using Makefile
-make run app  
-```
-
-#### Running using docker-compose
+- #### Running using docker-compose
 ```bash
 # build and run app and all necessary containers using docker-compose
 make run-all 
 ```
 # Endpoints
-
+WIP
 # Testing
 For run test, ensure you install dev dependencies and run `make test`
 ```bash 
