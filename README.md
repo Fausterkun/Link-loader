@@ -1,9 +1,100 @@
-### Link loader
+# Link loader
+
+Project for add/store/delete and check link availability.
+---
+
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)   
+  - [Installation](#installation)
+  - [Running the App](#running)
+    - [Local](#running-local)
+    - [Using Docker](#running-using-docker-compose)
+- [Endpoints](#endpoints)
+- [Testing](#testing)
+- [Linting](#linting)
+
+# Getting Started
+
+## Prerequisites
+
+- Python 3.9 or higher
+- Poetry (for local development)
+- Docker 
+
+### Installation
+Make sure you have Python 3.10 installed.
+Project use poetry for control dependencies.
+
+```bash
+# Clone the repository
+git clone <this repo url>
+
+# Change into the project directory
+cd Link-loader
+
+# Install project dependencies and update them
+poetry install && poetry update
+
+# Activate virtual environment
+poetry shell
+```
+All settings in setting.yaml file. 
+
+All secrets can be setup using .env file or directly setup with "LINKER_APP_" prefix.
+
+When settings vars duplicate, then used this priority: cmd_args > vars from .env > direct env vars > config.yaml 
+
+### Running
+Simple way to run app is using [docker compose](#running-using-docker-compose), 
+but if you want to install it locally and setup url to database or message-queue by yourself
+use follow [local](#running-local) installation option instruction.
 
 
-### Показ логов
-Real-time обновление логов сделала через websocket и добавление хэндлера на рассылку всем подключюенным сейчас клиентам.
-Также присутствует возможность конфигурации уровня и формата через config.yaml в LOGGER:WEBSOCKET параметрах.
+#### Running local:
+In that way you can setup arguments as you want
+```bash
+# use -h flag for see help 
+poetry run app [-h] [--config-file CONFIG_FILE] [--host HOST] [--port PORT] [--message-queue MESSAGE_QUEUE] [--channel CHANNEL]
+           [--cors-allowed-origins CORS_ALLOWED_ORIGINS] [--log-buffer-size LOG_BUFFER_SIZE]
+```
 
-Так как логи приложения у нас хранятся в файлах, доступ к последним логам был бы файловой io-операцией, в худшем случае(при малолм максимальном размере файла логов и большом количеств строк на вывод) это бы заняло время на открытие и чтение со всех файлов, что сказалось бы на производительности всего приложения. Как вариант - можно было вывести эту задачу на отдельный воркур и по окончанию передать результат через real-time соединение, но это решение я оставила на будущее и реализовала дополнительный хендлер со структурой данных для хранения добавленных логов в памяти приложения. 
-При таком сценарии мы конечно потеряем возможность читать логи из предыдущих сеансов приложения(в случае если весь app упадет) и будем тратить дополнительное время на запись через ещё один хэндлер при каждом логировании и постоянное хранение в памяти последних логов, но зато получим быстрый доступ к странице логов.
+- Run app with redis and postgres run in containers:
+```bash
+# Run app locally using Makefile
+make run app  
+```
+
+#### Running using docker-compose
+```bash
+# build and run app and all necessary containers using docker-compose
+make run-all 
+```
+# Endpoints
+
+# Testing
+For run test, ensure you install dev dependencies and run `make test`
+```bash 
+# install devs dependencies
+make devenv
+
+# activate vitrual envirnoment
+poetry shell
+
+# run tests
+make test
+```
+
+# Linting
+For run linting (using flake8), ensure you install dev dependencies and run `make lint`
+```bash 
+# install devs dependencies
+make devenv
+
+# activate vitrual envirnoment
+poetry shell
+
+# run linter
+make lint
+```
+
+
