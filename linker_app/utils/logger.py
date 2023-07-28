@@ -2,7 +2,7 @@ import logging
 
 
 class LogBuffer:
-    def __init__(self, max_size: int):
+    def __init__(self, max_size: int = 50):
         # TODO: create reading from log files for init logs after app restart
         self._max_size = max_size
         if self._max_size < 1:
@@ -10,6 +10,10 @@ class LogBuffer:
 
         self._size = 0
         self._buffer = []
+
+    def configurate(self, kwargs=None):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def add_message(self, message: dict):
         if self._max_size <= self._size:

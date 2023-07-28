@@ -1,10 +1,9 @@
 import argparse
 
 from configargparse import ArgumentParser
-from flask import g
 
-from linker_app.app import socketio, app
-from linker_app.app.settings import configure_app, init_socketio, init_db
+from linker_app.main import socketio, app, db
+from utils.settings import configure_app, init_socketio
 from linker_app.utils.argparse import positive_int
 
 # Prefix for aut setup config from env
@@ -61,6 +60,10 @@ def main():
         debug=True,
         engineio_logger=True,
     )
+
+    db.init_app(app)
+    from sqlalchemy import text
+    db.session.execute(text("SELECT 1"))
 
     app.logger.info(f"App {app.name} started.")
     socketio.run(app, host=args.host, port=args.port)

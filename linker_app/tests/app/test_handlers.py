@@ -1,4 +1,4 @@
-from linker_app.app.service.routes_handlers import handle_link, FetchResponse
+from linker_app.main.service.routes_handlers import handle_link, FetchResponse
 
 
 def test_handle_link():
