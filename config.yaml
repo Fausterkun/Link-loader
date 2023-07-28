@@ -1,6 +1,11 @@
 SECRET_KEY: "hack-my-secret-key"
 LOG_PATH: &LOG_PATH logs/app.log
-SQLALCHEMY_DATABASE_URI: "postgresql://user:test@localhost/test_db"
+
+SQLALCHEMY_DATABASE_URI: "postgresql://test:test@localhost/test_db"
+SQLALCHEMY_POOL_SIZE: 5  # long living connections
+SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
+SQLALCHEMY_TIMEOUT: 30 # sec
+
 SOCKETIO:
   message_queue: "redis://"
   channel: "linker_socketio"

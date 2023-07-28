@@ -1,9 +1,10 @@
 import argparse
 
 from configargparse import ArgumentParser
+from flask import g
 
 from linker_app.app import socketio, app
-from linker_app.app.settings import configure_app, init_socketio
+from linker_app.app.settings import configure_app, init_socketio, init_db
 from linker_app.utils.argparse import positive_int
 
 # Prefix for aut setup config from env

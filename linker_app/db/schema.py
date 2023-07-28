@@ -38,15 +38,17 @@ class EventType(Enum):
     PHOTO_ADDED = "photo_added"
 
 
-web_resources = Table(
-    "web_resources",
+links_table = Table(
+    "links",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("uuid", UUID, default=str(uuid.uuid4()), index=True),
     Column("full_url", String, nullable=False, unique=True, index=True),
+
     Column("protocol", String, nullable=False),
     Column("domain", String, nullable=False),
     Column("domain_zone", String, nullable=False, index=True),
+
     Column("url_path", String),
     Column("query_params", JSON),
     Column("unavailable_count", Integer, default=0),

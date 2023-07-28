@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %} Links {% endblock %}
+
+{% block content %}
+    <table class="table mt-5">
+        <thead>
+        <tr>
+            <th>Protocol:</th>
+            <th>Domain</th>
+            <th>Zone</th>
+            <th>Path</th>
+            <th>Params</th>
+            <th>Last status</th>
+        </tr>
+        </thead>
+        <tbody id="table=links">
+        <!-- Data will be added dynamically using JavaScript -->
+        </tbody>
+    </table>
+    <div class="container mt-5">
+        <form id="add-link" method="post">
+            <div>
+                <input type="hidden"  name="form-identifier" value="link">
+                <label for="link-inpt">Link</label>
+                <input type="text" class="form-control" name="link-inpt" id="link-inpt" required>
+            </div>
+            <button type="submit" class="btn btn-primary" value="send">Add Person</button>
+        </form>
+        <form id="add-file" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="hidden"  name="form-identifier" value="file">
+                <label for="file-inpt">Load file</label>
+                <input type="file" class="form-control" name="file-inpt" id="file-inpt" required>
+            </div>
+            <button class="btn btn-primary" type="submit" value="send">Send file</button>
+        </form>
+    </div>
+{% endblock %}

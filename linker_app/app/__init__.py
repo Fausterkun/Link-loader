@@ -1,9 +1,8 @@
 from flask import Blueprint, Flask
 from flask_socketio import SocketIO
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 from .logger import LogBuffer
+from flask_sqlalchemy import SQLAlchemy
 
 from dotenv import load_dotenv
 
@@ -16,8 +15,6 @@ counter = 0
 bp = Blueprint("linker_app", __name__)
 
 app = Flask(__name__)  # , os.path.join(BASE_PATH, 'app/templates'))
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
 
 from . import routes
 

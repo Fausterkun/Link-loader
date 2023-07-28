@@ -6,10 +6,12 @@ import logging
 from pathlib import Path
 
 # from dotenv import load_dotenv
+from flask import g
 from logging.handlers import RotatingFileHandler
 
 from . import socketio, log_buffer
 from .logger import WebsocketHandler, LogBufferHandler
+from linker_app.db.engine import create_db_engine
 
 BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
@@ -34,6 +36,23 @@ def configure_app(app, conf_file: str = "config.yaml", args=None):
     app.config.from_file(conf_file, load=yaml.safe_load)
     if hasattr(app.config, "LOGGING"):
         configure_logging(app, args)
+
+    # create db engine and set it in g context
+    from linker_app.db import init_engine
+    init_engine()
+
+
+
+def init_db():
+    db = create_engine(
+        app.config['SQLALCHEMY_DATABASE_URI'],
+        pool_size=app.config['SQLALCHEMY_POOL_SIZE'],
+        max_overflow=app.config['SQLALCHEMY_MAX_OVERFLOW'],
+        pool_timeout=app.config['SQLALCHEMY_TIMEOUT'],
+        echo=True,
+        echo_pool=True
+    )
+    return db
 
 
 def configure_logging(app, args=None):
