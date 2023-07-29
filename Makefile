@@ -26,10 +26,16 @@ clean:
 sdidst:
 	poetry build 
 
-run-all:
+build:
+	docker compose build
+
+up: build 
 	docker stop linker_app || true
 	docker stop flask_redis || true
-	docker compose up --build -d
+	docker compose up -d
+
+down:
+	docker compose down
 
 docker:
 	docker stop linker_app || true

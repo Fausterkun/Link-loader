@@ -1,5 +1,7 @@
 import os.path
 import pathlib
+from argparse import Namespace
+from types import SimpleNamespace
 
 import sqlalchemy.exc
 from flask import Flask
@@ -10,13 +12,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_migrate import Migrate
 
-from linker_app.utils.logger import LogBuffer
 from linker_app.db.schema import metadata
 
+from linker_app.utils.logger import LogBuffer
+from linker_app.utils.argparse import clear_environ
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+ENV_VAR_PREFIX = "LINKER_APP_"
 
 socketio = SocketIO()
 db = SQLAlchemy(metadata=metadata)
+
 # init migrations in db directory
 migrate = Migrate(directory=os.path.join(BASE_DIR, 'db', 'migrations'))
 csrf = CSRFProtect()
@@ -27,13 +33,21 @@ log_buffer = LogBuffer()
 from linker_app.utils.config import load_config
 
 
-def create_app(conf_file="config.yaml", **kwargs):
+def create_app(conf_file: str = "config.yaml", args: (Namespace | SimpleNamespace) = None):
     app = Flask(__name__)
 
     # configure app
+    # load map object from config file and env
     config = load_config(conf_file)
-    app.config.from_mapping(config, **kwargs)
+    # env_vars = get_env_vars_by_prefix(ENV_VAR_PREFIX)
 
+    # set or re-wright values from config file -> env vars -> kwargs
+    app.config.from_mapping(config)
+    # app.config.from_mapping(env_vars)
+    app.config.from_object(args)
+
+    # clear env vars for security reasons
+    clear_environ(lambda i: i.startswith(ENV_VAR_PREFIX))
     # configure logging
     from linker_app.utils.config import configure_logging
     configure_logging(app)

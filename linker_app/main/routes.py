@@ -62,3 +62,8 @@ def connect():
         namespace="/logs",
     )
     app.logger.info("Websocket connection to /logs page")
+
+
+@socketio.on_error_default  # handles all namespaces without an explicit error handler
+def default_error_handler(e):
+    app.logger.error(e)

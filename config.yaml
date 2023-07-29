@@ -1,6 +1,8 @@
 SECRET_KEY: "hack-my-secret-key"
+message_queue: "redis://"  # redis at localhost
 PORT: 8000
 HOST: '0.0.0.0'
+CORS_ALLOWED_ORIGINS: "*"
 LOG_PATH: &LOG_PATH logs/app.log
 
 SQLALCHEMY_DATABASE_URI: &DB_URL "postgresql://test:test@localhost/test_db"
@@ -11,15 +13,15 @@ WTF_CSRF_SECRET_KEY: 'a random string'
 TEST_LINKER_APP_PG_URL: *DB_URL  # production db used also for test. change it if needed
 
 SOCKETIO:
-  message_queue: "redis://"
+#  message_queue: "redis://"
   channel: "linker_socketio"
   logger: true
   engineio_logger: true
-  cors_allowed_origins: "*"
-  port: 8000
-  host: '0.0.0.0'
-DB:
-  url: 'postgresql://user:test@localhost/test_db'
+#  cors_allowed_origins: "*"
+#  port: 8000
+#  host: '0.0.0.0'
+#DB:
+#  url: 'postgresql://user:test@localhost/test_db'
 LOGGING:
   LEVEL: INFO
 

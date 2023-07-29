@@ -17,12 +17,12 @@ parser = ArgumentParser(
 
 group = parser.add_argument_group("App options")
 group.add_argument(
-    "--config-file", default="config.yaml", help="Url for .yaml config file"
+    "--config-file", required=True, default="config.yaml", help="Url for .yaml config file"
 )
 
 group = parser.add_argument_group("Server options")
 group.add_argument(
-    "--host", default="0.0.0.0", help="IPv4 address for server for listen"
+    "--host", required=False, help="IPv4 address for server for listen"
 )
 group.add_argument(
     "--port", type=positive_int, default=8000, help="TCP server listening port"
@@ -45,7 +45,6 @@ def main():
     if args.message_queue.startswith("redis"):
         # Patch eventlet for use with redis as mq
         import eventlet
-
         eventlet.monkey_patch()
 
     configure_app(app, conf_file=args.config_file, args=args)
