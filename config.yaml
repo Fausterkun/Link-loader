@@ -5,13 +5,14 @@ SQLALCHEMY_DATABASE_URI: "postgresql://test:test@localhost/test_db"
 SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
 SQLALCHEMY_TIMEOUT: 30 # sec
+WTF_CSRF_SECRET_KEY: 'a random string'
 
 SOCKETIO:
   message_queue: "redis://"
   channel: "linker_socketio"
-#  logger: true
-#  engineio_logger: true
-#  cors_allowed_origins: "*"
+  logger: true
+  engineio_logger: true
+  cors_allowed_origins: "*"
 DB:
   url: 'postgresql://user:test@localhost/test_db'
 LOGGING:

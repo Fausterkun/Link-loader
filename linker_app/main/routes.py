@@ -5,11 +5,11 @@ from flask import render_template, request, jsonify
 
 from linker_app import socketio, log_buffer, counter  # noqa F401
 from linker_app.main import bp
-
-
-# from linker_app.app.service.routes_handlers import handle_link
+from linker_app.main.service.routes_handlers import handle_link
+from linker_app.main.forms import UrlForm
 
 app = flask.current_app
+
 
 @bp.route("/")
 @bp.route("/index")
@@ -19,38 +19,28 @@ def index():  # put application's code here
     return render_template("index.html")
 
 
-# @bp.route("/links", methods=["GET", "POST"])
-# def links():
-#     """ Route for links:
-#     Get:
-#         - Get all links
-#     Post: - used form-identifier for indicate which from used
-#         If str received:
-#             - parse it, add to db(if no errors) and return parse result/errors
-#
-#         If file received:
-#             # TODO : continue
-#             -
-#     """
-#     if request.method == 'POST':
-#         data_type = request.form['form-identifier']
-#         if data_type == 'link':
-#             resp = handle_link(request.form['link-inpt'])
-#             print('handle post to link', resp)
-#             return jsonify(resp)
-#         # elif data_type == 'file':
-#         #     print('file handlde')
-#         #     print('handle post to file')
-#         #     return json.dumps({'file': 'works'})
-#         else:
-#             return json.dumps({"logs": 'none'})
-#
-#     app.logger.info("User visit links page")
-#     # get all links
-#     context = {"links": {}}
-#     return render_template("links.html", context=context)
-#
-#
+@bp.route("/links", methods=["GET", "POST"])
+def links():
+    """ Route for links:
+    Get:
+        - Get all links
+    Post: - used form-identifier for indicate which from used
+        If str received:
+            - parse it, add to db(if no errors) and return parse result/errors
+
+        If file received:
+            # TODO : continue
+            -
+    """
+    app.logger.info("User visit links page")
+    url_form = UrlForm()
+    if request.method == 'POST':
+        app.logger.info('Post method call')
+        if form.validate_on_submit():
+            print(form.link)
+    context = {"links": {}}
+    return render_template("links.html", url_form=url_form, context=context)
+
 
 # @bp.route("/links", methods=["GET", "POST"])
 # def links():

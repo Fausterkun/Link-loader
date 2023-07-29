@@ -23,6 +23,7 @@ pyyaml = "^6.0.1"
 configargparse = "^1.5.5"
 flask-migrate = "^4.0.4"
 psycopg2 = "^2.9.6"
+flask-wtf = "^1.1.1"
 
 
 [tool.poetry.group.DEV.dependencies]
@@ -32,8 +33,8 @@ sqlalchemy-utils = "^0.41.1"
 yarl = "^1.9.2"
 
 [tool.poetry.scripts]
-app = "linker_app.app.__main__:main"
-db = "linker_app.db.__main__:main"
+app = "entrypoint:app"
+db = "entrypoint.db.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
