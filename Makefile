@@ -1,20 +1,24 @@
-.PHONY: all run test lint black log_clear
+.PHONY: all run migrate build up down redis test lint log_clear clean
 
 all:
 	@echo "devenv 			- create and setup development virtual env using poetry" 
 	@echo "run				- run web app"
-	@echo "run-all 			- app all app due docker compose"
-	@echo "run redis 		- up redis container at 6379 port"
+	@echo "migrate 			- run db migrations"
+	@echo "docker 			- run web app at container"
+	@echo "build 			- docker compose build"
+	@echo "up 				- up docker compose"
+	@echo "down 			- down docker compose"
+	@echo "redis	 		- up redis container at 6379 port"
 	@echo "test				- run testing"
-	@echo "lint				- run linter checker"
-	@echo "black				- run black for our code"
-	@echo "log_clear			- delete all files in logs/ dir"
+	@echo "lint				- run flake8 linting"
+	@echo "log_clear		- delete all files in logs/ dir"
+	@echo "clean 			- clear dist/ folder"
 
 devenv:
 	poetry install --with=DEV  && poetry update
 
 run: 
-	poetry run app 
+	python entrypoint.py
 
 clean:
 	rm -rf dist/
@@ -25,7 +29,7 @@ sdidst:
 run-all:
 	docker stop linker_app || true
 	docker stop flask_redis || true
-	docker compose up --build  #-d
+	docker compose up --build -d
 
 docker:
 	docker stop linker_app || true
@@ -42,6 +46,16 @@ redis:
 	--rm \
 	--name=flask_redis \
 	-p 6379:6379 redis
+
+postgres:
+	docker stop linker_app_postgres || true
+	docker run --rm \
+		--name linker_app_postgres \
+		-p 5432:5432 \
+		-e POSTGRES_USER=test \
+		-e POSTGRES_PASSWORD=test \
+		-e POSTGRES_DB=test_db \
+		-d postgres:latest
 
 test: 
 	pytest --disable-warnings

@@ -32,10 +32,6 @@ black = "^23.3.0"
 sqlalchemy-utils = "^0.41.1"
 yarl = "^1.9.2"
 
-[tool.poetry.scripts]
-app = "entrypoint:app"
-db = "entrypoint.db.__main__:main"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

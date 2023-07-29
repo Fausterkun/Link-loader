@@ -36,23 +36,16 @@ def links():
     url_form = UrlForm()
     if request.method == 'POST':
         app.logger.info('Post method call')
-        if form.validate_on_submit():
-            print(form.link)
+        if url_form.validate_on_submit():
+            print(url_form.link)
     context = {"links": {}}
     return render_template("links.html", url_form=url_form, context=context)
 
 
-# @bp.route("/links", methods=["GET", "POST"])
-# def links():
-#     app.logger.info("User visit links page")
-#     return "<h1>hi max</h1>"
-
-
 @bp.route("/logs", methods=["GET"])
 def logs():
-    global counter
-    app.logger.info(str(counter))
-    counter += 1
+    app.logger.info("User visit logs page")
+    # app.logger.info(str(counter))
     return render_template("logs.html")
 
 
@@ -61,13 +54,11 @@ def logs():
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    app.logger.info("Websocket connection to /logs page")
-    # collect all previous logs
-    # logs = app.log_buffer.get_all()
-    logs = log_buffer.get_all()
+    last_logs = log_buffer.get_last()  # copy last logs
     socketio.emit(
         event="init_logs",
         to=getattr(request, "sid", None),
-        data={"logs": logs},
+        data={"logs": last_logs[:]},
         namespace="/logs",
     )
+    app.logger.info("Websocket connection to /logs page")

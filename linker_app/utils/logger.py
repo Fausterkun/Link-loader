@@ -1,3 +1,4 @@
+import copy
 import logging
 
 
@@ -21,8 +22,8 @@ class LogBuffer:
         self._buffer.append(message)
         self._size += 1
 
-    def get_all(self):
-        return self._buffer
+    def get_last(self):
+        return copy.copy(self._buffer)
 
     def update_size(self, new_size: int):
         if new_size < self._max_size:

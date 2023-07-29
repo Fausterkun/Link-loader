@@ -1,11 +1,14 @@
 SECRET_KEY: "hack-my-secret-key"
+PORT: 8000
+HOST: '0.0.0.0'
 LOG_PATH: &LOG_PATH logs/app.log
 
-SQLALCHEMY_DATABASE_URI: "postgresql://test:test@localhost/test_db"
+SQLALCHEMY_DATABASE_URI: &DB_URL "postgresql://test:test@localhost/test_db"
 SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
 SQLALCHEMY_TIMEOUT: 30 # sec
 WTF_CSRF_SECRET_KEY: 'a random string'
+TEST_LINKER_APP_PG_URL: *DB_URL  # production db used also for test. change it if needed
 
 SOCKETIO:
   message_queue: "redis://"
@@ -13,6 +16,8 @@ SOCKETIO:
   logger: true
   engineio_logger: true
   cors_allowed_origins: "*"
+  port: 8000
+  host: '0.0.0.0'
 DB:
   url: 'postgresql://user:test@localhost/test_db'
 LOGGING:

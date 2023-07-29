@@ -63,7 +63,7 @@ def main():
 
     db.init_app(app)
     from sqlalchemy import text
-    db.session.execute(text("SELECT 1"))
+    ab.session.execute(text("SELECT 1"))
 
     app.logger.info(f"App {app.name} started.")
     socketio.run(app, host=args.host, port=args.port)
