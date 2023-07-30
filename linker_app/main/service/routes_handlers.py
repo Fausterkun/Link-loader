@@ -1,6 +1,5 @@
 import dataclasses
 
-from flask import jsonify
 from urllib.parse import urlparse, parse_qs
 
 
@@ -29,10 +28,10 @@ def handle_link(link: str):
     parsed_link = urlparse(link)
     print(parsed_link)
     protocol = parsed_link.scheme
-    print('protocol:', protocol)
+    print("protocol:", protocol)
     domain_with_zone = parsed_link.path
-    print('dom with zone:', domain_with_zone)
-    domain, domain_zone = domain_with_zone.rsplit('.', 1)
+    print("dom with zone:", domain_with_zone)
+    domain, domain_zone = domain_with_zone.rsplit(".", 1)
     params = parse_qs(parsed_link.query)
     fragment = parsed_link.fragment
     # if fields are empty, assume that this one isn't link at all
@@ -40,20 +39,21 @@ def handle_link(link: str):
     #     raise ValidationError("Invalid link format")
     response = FetchResponse(
         result={
-            'protocol': protocol,
-            'domain_with_zone': domain_with_zone,
-            'domain': domain,
-            'domain_zone': domain_zone,
-            'params': params,
-            'fragment': fragment
+            "protocol": protocol,
+            "domain_with_zone": domain_with_zone,
+            "domain": domain,
+            "domain_zone": domain_zone,
+            "params": params,
+            "fragment": fragment,
         },
-        errors={}
+        errors={},
     )
     # except ValueError as e:
     #     print(e, e.args)
     #     response = FetchResponse(result={}, errors={'Validation Error': "Invalid link format."})
-    print('Max here')
+    print("Max here")
     return response
+
 
 # save to db
 

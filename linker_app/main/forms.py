@@ -4,16 +4,19 @@ from wtforms.validators import InputRequired, URL, HostnameValidation
 
 
 class UrlOnlyValidator(URL):
-    """ Validator for check url only, failed at ip. """
+    """Validator for check url only, failed at ip."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.validate_hostname = HostnameValidation(
-            require_tld=require_tld,
-            allow_ip=False
-        )
+        self.validate_hostname = HostnameValidation(allow_ip=False, *args, **kwargs)
 
 
 # form which allow url
 class UrlForm(FlaskForm):
-    link = URLField('link', validators=[InputRequired(message="Field can't be empty"), URL(message="Value not a url.")])
-
+    link = URLField(
+        "link",
+        validators=[
+            InputRequired(message="Field can't be empty"),
+            URL(message="Value not a url."),
+        ],
+    )

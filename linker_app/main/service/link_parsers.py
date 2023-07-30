@@ -1,4 +1,2 @@
-
-
-def parse_link(link:str):
+def parse_link(link: str):
     pass

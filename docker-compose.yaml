@@ -24,7 +24,7 @@ services:
     build: .
     container_name: linker_app
     env_file:
-      - ./.env
+      - ./compose.env
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/

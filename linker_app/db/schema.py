@@ -1,4 +1,3 @@
-import uuid
 from enum import Enum
 
 # from sqlalchemy.dialects.postgresql import JSON, UUID
@@ -9,7 +8,7 @@ from sqlalchemy import (
     Column,
     Table,
     ForeignKey,
-    Enum as PgEnum,
+    # Enum as PgEnum,
     Integer,
     String,
     UUID,
@@ -19,7 +18,7 @@ from sqlalchemy import (
     Boolean,
 )
 
-from linker_app.utils.pg import get_str_uuid4
+from linker_app.utils.db import get_str_uuid4
 
 convention = {
     "all_column_names": lambda constraint, table: "_".join(
@@ -51,11 +50,9 @@ links_table = Table(
     Column("id", Integer, primary_key=True),
     Column("uuid", UUID, default=get_str_uuid4, index=True),
     Column("full_url", String(255), nullable=False, unique=True, index=True),
-
     Column("protocol", String(16), nullable=False),
     Column("domain", String, nullable=False),
     Column("domain_zone", String, nullable=False, index=True),
-
     Column("path", String(255)),
     Column("query_params", JSON),
     Column("unavailable_count", Integer, default=0),
@@ -63,7 +60,7 @@ links_table = Table(
 )
 
 links_screenshot = Table(
-    'links_screenshots',
+    "links_screenshots",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("link_id", Integer, ForeignKey("links.id")),
