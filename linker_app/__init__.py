@@ -46,11 +46,6 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     app.config.from_mapping(kwargs)
 
     # clear env vars for security reasons
-    print(config)
-    print("----")
-    print(env_vars)
-    print("----")
-    print(app.config.items())
     clear_environ(lambda i: i.startswith(ENV_VAR_PREFIX))
     # configure logging
     from linker_app.utils.config import configure_logging
