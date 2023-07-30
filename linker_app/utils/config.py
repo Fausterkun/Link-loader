@@ -1,4 +1,5 @@
 import logging
+import os.path
 from logging.handlers import RotatingFileHandler
 
 import yaml
@@ -44,6 +45,12 @@ def _add_file_handler(app, conf: dict):
     handler_args = conf["HANDLER"]
     level = conf["LEVEL"]
 
+    # Create path for logs
+    log_dir = os.path.dirname(handler_args['filename'])
+    print('Log dir is: ', log_dir)
+    if not os.path.exists(log_dir):
+        print('create log dir: ', log_dir)
+        os.mkdir(log_dir)
     handler = RotatingFileHandler(**handler_args)
     # TODO: may be refactor for all args in one call pass
     handler.setLevel(level)
