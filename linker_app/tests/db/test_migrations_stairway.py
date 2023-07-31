@@ -4,17 +4,10 @@ from flask import current_app
 import pytest
 from alembic.command import downgrade, upgrade
 
-# from alembic.config import Config
 from alembic.script import ScriptDirectory, Script
 from flask_migrate import AlembicConfig as Config
 
-# from flask_migrate.cli import upgrade, downgrade
-
 from linker_app import create_app, migrate
-
-# app = create_app()
-
-# app = current_app
 
 
 def get_revisions():

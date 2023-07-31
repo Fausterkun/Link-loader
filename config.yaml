@@ -2,10 +2,15 @@ SECRET_KEY: "hack-my-secret-key"
 MESSAGE_QUEUE: &MQ "redis://"  # redis at localhost
 MESSAGE_QUEUE_CHANNEL: "linker_app_socketio"
 
+MQ_HOST: 'localhost'
+MQ_PORT: '6379'
+MQ_FILE_CHANEL: 'linker_app_file_parser'
+
 PORT: 5000
 HOST: '0.0.0.0'
 CORS_ALLOWED_ORIGINS: &CORS_ALLOWED "*"
 LOG_PATH: &LOG_PATH logs/app.log
+FILES_STORE_DIR: "/files"
 
 #dINKER_APP_BROKER_URL_HOST=redis
 #RESULT_BACKEND_HOST=redis

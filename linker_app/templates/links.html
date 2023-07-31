@@ -28,14 +28,8 @@
                 </ul>
             {% endif %}
             {{ url_form.csrf_token }}
-{#            {{ url_from.hidden_tag() }}#}
             {{ url_form.link.label }}
             {{ url_form.link(size=20, class="form-control") }}
-{#            <div>#}
-{#                <input type="hidden" name="form-identifier" value="link">#}
-{#                <label for="link-inpt">Link</label>#}
-{#                <input type="text" class="form-control" name="link-inpt" id="link-inpt" required>#}
-{#            </div>#}
             <button type="submit" class="btn btn-primary m-2" value="Send">Add Person</button>
         </form>
         <form id="add-file" method="post" enctype="multipart/form-data">

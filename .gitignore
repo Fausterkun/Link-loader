@@ -2,7 +2,7 @@
 !/sub_project/
 compose.env
 # Django #
-*.log
+*.log.*
 *.pot
 *.pyc
 #*.json

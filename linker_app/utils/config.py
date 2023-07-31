@@ -46,10 +46,10 @@ def _add_file_handler(app, conf: dict):
     level = conf["LEVEL"]
 
     # Create path for logs
-    log_dir = os.path.dirname(handler_args['filename'])
-    print('Log dir is: ', log_dir)
+    log_dir = os.path.dirname(handler_args["filename"])
+    print("Log dir is: ", log_dir)
     if not os.path.exists(log_dir):
-        print('create log dir: ', log_dir)
+        print("create log dir: ", log_dir)
         os.mkdir(log_dir)
     handler = RotatingFileHandler(**handler_args)
     # TODO: may be refactor for all args in one call pass
@@ -71,7 +71,7 @@ def _add_buffer_handler(app, buffer_obj, conf):
     # re-assign if value in args or conf
     if "LOG_BUFFER_SIZE" in conf:
         max_size = conf["LOG_BUFFER_SIZE"]
-    log_buffer.update_size(max_size)
+    log_buffer.max_size = max_size
 
     # create handler
     handler = LogBufferHandler(buffer_obj=buffer_obj)

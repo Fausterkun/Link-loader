@@ -2,7 +2,6 @@ from enum import Enum
 
 # from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.sql import func
-from flask_sqlalchemy.model import Model
 from sqlalchemy import (
     MetaData,
     Column,
@@ -33,10 +32,6 @@ convention = {
 metadata = MetaData(naming_convention=convention)
 
 
-class BaseModel(Model):
-    pass
-
-
 class EventType(Enum):
     STATUS_CHANGED = "status_changed"
     RESOURCE_ADDED = "resource_added"
@@ -59,7 +54,7 @@ links_table = Table(
     # Column("screenshot", LargeBinary, nullable=True),
 )
 
-links_screenshot = Table(
+screenshot_table = Table(
     "links_screenshots",
     metadata,
     Column("id", Integer, primary_key=True),
@@ -67,8 +62,8 @@ links_screenshot = Table(
     Column("screenshot", LargeBinary, nullable=True),
 )
 
-response_table = Table(
-    "link_responses",
+link_status_table = Table(
+    "link_status",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("link_id", Integer, ForeignKey("links.id")),
@@ -77,15 +72,17 @@ response_table = Table(
     Column("is_available", Boolean),
 )
 
-# file_processing_requests = Table(
-#     "file_processing_requests",
-#     metadata,
-#     Column("id", Integer, primary_key=True),
-#     Column("total_urls", Integer, nullable=True, default=None),
-#     Column("processed_urls", Integer, nullable=True, default=None),
-#     Column("errors", Integer, nullable=True, default=None),
-#     Column("is_finished", Boolean, default=False),
-# )
+
+file_parse_requests_table = Table(
+    "file_parse_requests",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String, unique=True),
+    Column("total_urls", Integer, default=None),
+    Column("processed_urls", Integer, nullable=True, default=None),
+    Column("errors", Integer, nullable=True, default=None),
+    Column("is_finished", Boolean, default=False),
+)
 
 # news_feed_items = Table(
 #     "news_feed_items",
