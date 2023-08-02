@@ -23,9 +23,7 @@ ENV_VAR_PREFIX = "LINKER_APP_"
 load_dotenv(".env")
 
 socketio = SocketIO()
-# db = SQLAlchemy(model_class=IdModel, metadata=metadata)
-# db = SQLAlchemy(metadata=metadata)
-db = SQLAlchemy()
+db = SQLAlchemy(model_class=IdModel, metadata=metadata)
 
 # init migrations in db directory
 migrate = Migrate(directory=os.path.join(BASE_DIR, "database", "migrations"))
@@ -94,7 +92,6 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     # from linker_app.api import bp
     # app.register_blueprint(bp, url_prefix='/api')
 
-    from linker_app.database.schema import Links
     return app
 
 

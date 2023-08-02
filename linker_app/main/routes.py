@@ -1,5 +1,5 @@
 import flask
-from flask import render_template, request
+from flask import render_template, request, flash
 
 from linker_app import socketio, log_buffer, counter  # noqa F401
 from linker_app.main import bp
@@ -34,7 +34,8 @@ def links():
             if not status:
                 # TODO: add flush notification about error here
                 return render_template("links.html", url_form=url_form, errors=errors, context=context)
-            return result
+            flash("Link saved successfully")
+            app.logger.info('Links saved successfully')
     return render_template("links.html", url_form=url_form, context=context)
 
 

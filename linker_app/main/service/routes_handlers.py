@@ -10,14 +10,6 @@ from linker_app import db, rabbit
 from linker_app.database.query import create_or_update_link
 
 
-class ValidationError(ValueError):
-    pass
-
-
-class SaveError(ValueError):
-    pass
-
-
 log = logging.getLogger()
 
 
@@ -33,7 +25,6 @@ def parse_link(link: str):
         domain_with_zone = parsed_link.netloc
         domain, domain_zone = domain_with_zone.rsplit(".", 1)
         params = parse_qs(parsed_link.query)
-        fragment = parsed_link.fragment
         parsed = {
             'url': link,
             'protocol': protocol,
@@ -41,7 +32,6 @@ def parse_link(link: str):
             'domain': domain,
             'domain_zone': domain_zone,
             'params': json.dumps(params),
-            'fragment': fragment
         }
     except (ValueError) as e:  # , NameError):
         # TOOO: log that e

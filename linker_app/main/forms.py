@@ -7,8 +7,8 @@ class UrlOnlyValidator(URL):
     """Validator for check url only, failed at ip."""
 
     def __init__(self, *args, **kwargs):
+        self.validate_hostname = HostnameValidation(require_tld=False, allow_ip=False)
         super().__init__(*args, **kwargs)
-        self.validate_hostname = HostnameValidation(allow_ip=False)
 
 
 # form which allow url
