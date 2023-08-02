@@ -17,6 +17,15 @@ def load_config(file_path):
 def configure_logging(app):
     """Set logger level and add necessary handlers"""
 
+    # TODO: finish that
+    # for logger in (
+    #         app.logger,
+    #         logging.getLogger('sqlalchemy'),
+    #         logging.getLogger('other_package'),
+    # ):
+    #     logger.addHandler(default_handler)
+    #     logger.addHandler(mail_handler)
+
     # config log buffer:
     logging_conf = app.config["LOGGING"]
 
@@ -47,10 +56,9 @@ def _add_file_handler(app, conf: dict):
 
     # Create path for logs
     log_dir = os.path.dirname(handler_args["filename"])
-    print("Log dir is: ", log_dir)
     if not os.path.exists(log_dir):
-        print("create log dir: ", log_dir)
         os.mkdir(log_dir)
+
     handler = RotatingFileHandler(**handler_args)
     # TODO: may be refactor for all args in one call pass
     handler.setLevel(level)

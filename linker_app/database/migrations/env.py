@@ -40,9 +40,9 @@ def get_engine_url():
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from linker_app.db import schema
+from linker_app.database import schema
 
-target_metadata = schema.metadata
+# target_metadata = schema.metadata
 
 config.set_main_option("sqlalchemy.url", get_engine_url())
 target_db = current_app.extensions["migrate"].db

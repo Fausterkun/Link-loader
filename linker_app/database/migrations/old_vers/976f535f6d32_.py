@@ -14,13 +14,16 @@ down_revision = None
 branch_labels = None
 depends_on = None
 
-EventType = sa.Enum(
-    "status_changed",
-    "resource_added",
-    "resource_deleted",
-    "photo_added",
-    name="event_type",
-)
+# EventType = sa.Enum(
+#     "status_changed",
+#     "resource_added",
+#     "resource_deleted",
+#     "photo_added",
+#     name="event_type",
+# )
+# for drop inset it in downgrade() function:
+
+# EventType.drop(op.get_bind(), checkfirst=False)
 
 
 def upgrade():
@@ -89,5 +92,4 @@ def downgrade():
         batch_op.drop_index(batch_op.f("ix__links__domain_zone"))
 
     op.drop_table("links")
-    EventType.drop
     # ### end Alembic commands ###

@@ -1,16 +1,16 @@
 .PHONY: all run migrate build up down redis test lint log_clear clean
 
 all:
-	@echo "devenv 			- create and setup development virtual env using poetry" 
-	@echo "run				- run web app"
-	@echo "migrate 			- run db migrations"
+	@echo "devenv			- create and setup development virtual env using poetry" 
+	@echo "run			- run web app"
+	@echo "migrate			- run db migrations"
 	@echo "docker 			- run web app at container"
 	@echo "build 			- docker compose build"
-	@echo "up 				- up docker compose"
+	@echo "up			- up docker compose"
 	@echo "down 			- down docker compose"
 	@echo "redis	 		- up redis container at 6379 port"
-	@echo "test				- run testing"
-	@echo "lint				- run flake8 linting"
+	@echo "test			- run testing"
+	@echo "lint			- run flake8 linting"
 	@echo "log_clear		- delete all files in logs/ dir"
 	@echo "clean 			- clear dist/ folder"
 
@@ -19,6 +19,9 @@ devenv:
 
 run: 
 	python entrypoint.py
+
+migrate:
+	flask db migrate
 
 clean:
 	rm -rf dist/
@@ -62,6 +65,13 @@ postgres:
 		-e POSTGRES_PASSWORD=test \
 		-e POSTGRES_DB=test_db \
 		-d postgres:latest
+
+rabbitmq: 
+	docker stop linker_app_rmq || true
+	docker run --rm \
+		--name linker_app_rabbitmq \
+		-p 5672:5672 \
+		-d rabbitmq:latest
 
 test: 
 	pytest --disable-warnings

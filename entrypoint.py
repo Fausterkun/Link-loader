@@ -16,5 +16,4 @@ if __name__ == "__main__":
 
     app.extensions["socketio"].run(
         app, port=port, host=host
-    )  # , cors_allowed_origins=cors_allowed_origins)
-    # socketio.run(app, port=8000, host='0.0.0.0', cors_allowed_origins="*")
+    )

@@ -4,6 +4,7 @@ from flask import render_template, request
 from linker_app import socketio, log_buffer, counter  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
+from linker_app.main.service.routes_handlers import link_handler
 
 app = flask.current_app
 
@@ -18,24 +19,22 @@ def index():  # put application's code here
 
 @bp.route("/links", methods=["GET", "POST"])
 def links():
-    """Route for links:
-    Get:
-        - Get all links
-    Post: - used form-identifier for indicate which from used
-        If str received:
-            - parse it, add to db(if no errors) and return parse result/errors
-
-        If file received:
-            # TODO : continue
-            -
-    """
     app.logger.info("User visit links page")
     url_form = UrlForm()
+    # file_form =
+    context = {
+        "links": {},
+    }
     if request.method == "POST":
         app.logger.info("Post method call")
+        # if message from url form
         if url_form.validate_on_submit():
-            print(url_form.link)
-    context = {"links": {}}
+            # validate link and send it to db
+            status, errors = link_handler(url_form.link.data)
+            if not status:
+                # TODO: add flush notification about error here
+                return render_template("links.html", url_form=url_form, errors=errors, context=context)
+            return result
     return render_template("links.html", url_form=url_form, context=context)
 
 

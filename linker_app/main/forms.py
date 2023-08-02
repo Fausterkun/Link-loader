@@ -17,6 +17,6 @@ class UrlForm(FlaskForm):
         "link",
         validators=[
             InputRequired(message="Field can't be empty"),
-            URL(message="Value not a url."),
+            UrlOnlyValidator(message="Value not a url."),
         ],
     )

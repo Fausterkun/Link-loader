@@ -11,20 +11,26 @@ from flask_wtf.csrf import CSRFProtect
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 
-from linker_app.db.schema import metadata
+# from linker_app.database.schema import metadata, IdModel
+from linker_app.database.base import metadata, IdModel
 from linker_app.utils.logger import LogBuffer
 from linker_app.utils.argparse import clear_environ, get_env_vars_by_prefix
+
+from linker_app.file_parser_connector.rabbitmq_extension import RQExtension
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ENV_VAR_PREFIX = "LINKER_APP_"
 load_dotenv(".env")
 
 socketio = SocketIO()
-db = SQLAlchemy(metadata=metadata)
+# db = SQLAlchemy(model_class=IdModel, metadata=metadata)
+# db = SQLAlchemy(metadata=metadata)
+db = SQLAlchemy()
 
 # init migrations in db directory
-migrate = Migrate(directory=os.path.join(BASE_DIR, "db", "migrations"))
+migrate = Migrate(directory=os.path.join(BASE_DIR, "database", "migrations"))
 csrf = CSRFProtect()
+rabbit = RQExtension()
 
 counter = 0
 log_buffer = LogBuffer()
@@ -65,19 +71,21 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    rabbit.init_app(app)
+
     # Check connection to database and redis mq:
-    with app.app_context():
-        try:
-            _ = db.session.query(text("1")).from_statement(text("SELECT 1")).first
-            # register routes:
-            app.logger.info("Database ready to accept connections.")
-        except sqlalchemy.exc.SQLAlchemyError:
-            app.logger.error(
-                "Cannot connect to database, check url, connection and try again"
-            )
-            # print("Cannot connect to database, check url, connection and try again")
-            exit(128)
-        # TODO check also redis
+    # with app.app_context():
+    #     try:
+    #         _ = db.session.params(text("1")).from_statement(text("SELECT 1")).first()
+    #         # register routes:
+    #         app.logger.info("Database ready to accept connections.")
+    #     except sqlalchemy.exc.SQLAlchemyError:
+    #         app.logger.error(
+    #             "Cannot connect to database, check url, connection and try again"
+    #         )
+    #         # print("Cannot connect to database, check url, connection and try again")
+    #         exit(128)
+    #     # TODO check also redis
 
     from linker_app.main import bp
 
@@ -86,4 +94,7 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     # from linker_app.api import bp
     # app.register_blueprint(bp, url_prefix='/api')
 
+    from linker_app.database.schema import Links
     return app
+
+

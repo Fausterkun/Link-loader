@@ -6,6 +6,11 @@ MQ_HOST: 'localhost'
 MQ_PORT: '6379'
 MQ_FILE_CHANEL: 'linker_app_file_parser'
 
+RMQ_HOST: 'localhost'
+RMQ_PORT: '5672'
+RMQ_FILEQUEUE: 'linker_app_file_parser'
+#RMQ_MODE: 'PERSISTENT_DELIVERY_MODE' 'linker_app_file_parser'
+
 PORT: 5000
 HOST: '0.0.0.0'
 CORS_ALLOWED_ORIGINS: &CORS_ALLOWED "*"
@@ -20,7 +25,7 @@ SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
 SQLALCHEMY_TIMEOUT: 30 # sec
 WTF_CSRF_SECRET_KEY: 'a random string'
-TEST_LINKER_APP_PG_URL: *DB_URL  # production db used also for test. change it if needed
+#TEST_LINKER_APP_PG_URL: "postgresql://test:test@localhost/d123131s" # *DB_URL  # production db used also for test. change it if needed
 
 SOCKETIO:
   logger: true
