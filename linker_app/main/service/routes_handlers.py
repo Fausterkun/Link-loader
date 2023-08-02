@@ -8,18 +8,15 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from linker_app import db, rabbit
 from linker_app.database.query import create_or_update_link
-
+from linker_app.main.exceptions import ServerError, UrlValidationError,SaveToDatabaseError
 
 log = logging.getLogger()
 
 
 def parse_link(link: str):
     """ serialize str to dict object """
-    errors = []
-    parsed = None
     try:
         parsed_link = urlparse(link)
-
         protocol = parsed_link.scheme
         path = parsed_link.path
         domain_with_zone = parsed_link.netloc
@@ -33,11 +30,11 @@ def parse_link(link: str):
             'domain_zone': domain_zone,
             'params': json.dumps(params),
         }
-    except (ValueError) as e:  # , NameError):
-        # TOOO: log that e
-        errors.append({'Parser error': 'Cannot parse link.'})
+    except ValueError as e:
+        # TODO: log it e
+        raise UrlValidationError("Value not a link.")
 
-    return parsed, errors
+    return parsed
 
 
 def link_handler(link: str):
@@ -46,20 +43,15 @@ def link_handler(link: str):
       :return status:bool, errors:list(dict(str, str))
       """
     # serialize to Link obj
-    params, errors = parse_link(link)
-    # save to db
-    if errors:
-        return False, errors
+    parsed = parse_link(link)
 
-    # create link or update it unavailable_times counter
+    # add link to db or update it unavailable_times counter
     try:
-        create_or_update_link(**params)
+        create_or_update_link(**parsed)
     except SQLAlchemyError as e:
-        print(e)
         # TODO: add log info with e
         db.session.rollback()  # Roll back the transaction in case of an error
-        errors.append(dict(DatabaseError="Cannot add new link to db."))
-        return False, errors
+        raise SaveToDatabaseError("Can't save link to database, try again latter or say system admin.")
 
     return True, {}
 

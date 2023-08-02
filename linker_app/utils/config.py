@@ -7,6 +7,11 @@ import yaml
 from linker_app import log_buffer, socketio
 from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
 
+BASE_CONFIG_NAME = 'config.yaml'
+
+HANDLERS = logging._handlers
+
+
 
 def load_config(file_path):
     with open(file_path, "r") as file:

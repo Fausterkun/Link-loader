@@ -1,10 +1,6 @@
 import re
 
 
-class ValidationError(ValueError):
-    pass
-
-
 class RegexValidator:
     def __init__(self, regex, flags=0):
         self.regex = re.compile(regex, flags=flags)
@@ -39,7 +35,7 @@ class UrlValidator(RegexValidator):
             r"(?P<host>[^\/\?:]+)"
             r"(?P<port>:[0-9]+)?"
             r"(?P<path>\/.*?)?"
-            r"(?P<query>\?.*)?$"
+            r"(?P<params>\?.*)?$"
         )
         # create regex obj from regex string for url
         super().__init__(self.regex)

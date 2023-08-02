@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from utils import client  # noqa: F401
+from linker_app.tests.conftest import client  # noqa: F401
 
 
 def test_index(client):

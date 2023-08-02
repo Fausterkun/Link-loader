@@ -16,7 +16,7 @@ from linker_app.database.base import metadata, IdModel
 from linker_app.utils.logger import LogBuffer
 from linker_app.utils.argparse import clear_environ, get_env_vars_by_prefix
 
-from linker_app.file_parser_connector.rabbitmq_extension import RQExtension
+from linker_app.file_parser_connector.rabbit import RQExtension
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ENV_VAR_PREFIX = "LINKER_APP_"

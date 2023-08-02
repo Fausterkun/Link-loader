@@ -5,6 +5,7 @@ from linker_app import socketio, log_buffer, counter  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
 from linker_app.main.service.routes_handlers import link_handler
+from linker_app.main.exceptions import UrlValidationError, SaveToDatabaseError
 
 app = flask.current_app
 
@@ -19,9 +20,10 @@ def index():  # put application's code here
 
 @bp.route("/links", methods=["GET", "POST"])
 def links():
+    template_name = 'links.html'
+
     app.logger.info("User visit links page")
     url_form = UrlForm()
-    # file_form =
     context = {
         "links": {},
     }
@@ -30,13 +32,21 @@ def links():
         # if message from url form
         if url_form.validate_on_submit():
             # validate link and send it to db
-            status, errors = link_handler(url_form.link.data)
-            if not status:
-                # TODO: add flush notification about error here
-                return render_template("links.html", url_form=url_form, errors=errors, context=context)
+            try:
+                link_handler(url_form.link.data)
+            except (UrlValidationError, SaveToDatabaseError) as e:
+                # flush message to client about error
+                flash(e.args[0])
+                return render_template(template_name, url_form=url_form, context=context), 400
+
             flash("Link saved successfully")
-            app.logger.info('Links saved successfully')
-    return render_template("links.html", url_form=url_form, context=context)
+            url_form = UrlForm()
+            return render_template(template_name, url_form=url_form, context=context), 201
+        else:
+            flash("Value is not a url.")
+            return render_template(template_name, url_form=url_form, context=context), 400
+
+    return render_template(template_name, url_form=url_form, context=context)
 
 
 @bp.route("/logs", methods=["GET"])
@@ -63,4 +73,5 @@ def connect():
 
 @socketio.on_error_default  # handles all namespaces without an explicit error handler
 def default_error_handler(e):
+    # TODO: add logger here
     app.logger.error(e)
