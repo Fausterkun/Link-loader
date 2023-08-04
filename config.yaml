@@ -55,7 +55,7 @@ LOGGING:
     LEVEL: NOTSET
     SHOWED_COUNT: 50  # count of last log messages seen when page is opened
     EVENT_NAME: new_log  # event name for adding a new log line at frontend
-    NAMESPACE: logs  # namespace name for socketio handler
+    NAMESPACE: "/logs" # namespace name for socketio handler
     FORMATTER:
       #format
       fmt: "%(asctime)s - %(levelname)s - %(message)s"

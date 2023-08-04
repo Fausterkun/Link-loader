@@ -1,34 +1,9 @@
-import copy
 import logging
-from logging.handlers import RotatingFileHandler, BufferingHandler
-from linker_app.utils.handlers import BASE_HANDLERS, CUSTOM_HANDLERS, DEFAULT_FORMATTER
+import copy
+from logging.handlers import RotatingFileHandler
 
 
-def get_handler(name: str, **params):
-    # setup handler with params by his name
-    if name in BASE_HANDLERS:
-        handler = BASE_HANDLERS[name]
-
-    elif name in CUSTOM_HANDLERS:
-        handler = CUSTOM_HANDLERS[name]
-    else:
-        raise HandlerNotImplemented("Handler with name: {} is not implemented.".format(name))
-
-    if "HANDLER" in params:
-        handler = handler(**params['HANDLER'])
-    else:
-        handler = handler()
-
-    # support only default formatter
-    if "FORMATTER" in params:
-        formatter_conf = logging.Formatter(**params["FORMATTER"])
-        handler.setFormatter(formatter_conf)
-
-    return handler
-
-
-
-class LogBuffer:
+class LogBuffer(object):
     """
     Object for store last logs in RAM
     Used for quick last system log access
@@ -74,32 +49,60 @@ class LogBuffer:
     def __len__(self):
         return self.__size
 
+    @size.setter
+    def size(self, value):
+        self._size = value
+
+
+class HandlerNotImplemented(ValueError):
+    """ Handler with that name doesn't exist """
+
 
 class WebsocketHandler(logging.Handler):
     """Log handler for emit log message to the socketio object"""
 
-    def __init__(self, socket_obj, event_name, namespace, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.socket_obj = socket_obj
-        self.event_name = event_name
+    def __init__(self, event_name, namespace, *args, **kwargs):
+        from linker_app import socketio
+        self._socketio = socketio  # current_app.extensions['socketio']
+        self.event = event_name
         self.namespace = namespace
+        super().__init__(*args, **kwargs)
 
     def emit(self, record: logging.LogRecord) -> None:
-        self.socket_obj.emit(
-            event="new_log",
-            namespace="/logs",
-            data={"message": self.formatter.format(record), "level": record.levelname},
+        self._socketio.emit(
+            event=self.event,
+            namespace=self.namespace,
+            data=dict(
+                message=self.formatter.format(record),
+                level=record.levelname,
+            )
         )
 
 
 class LogBufferHandler(logging.Handler):
     """Logging handler for store new event in local LogBuffer object"""
 
-    def __init__(self, log_buffer: LogBuffer, *args, **kwargs):
+    def __init__(self, max_size=50, *args, **kwargs):
+        from linker_app import log_buffer
+        self._buffer_obj: LogBuffer = log_buffer
+        self._buffer_obj.max_size = max_size
+
         super().__init__(*args, **kwargs)
-        self._log_buffer = log_buffer
 
     def emit(self, record: logging.LogRecord) -> None:
-        self._log_buffer.add_message(
-            dict(level=record.levelname, message=self.formatter.format(record))
+        self._buffer_obj.add_message(
+            dict(
+                message=self.formatter.format(record),
+                level=record.levelname
+            )
         )
+
+
+DEFAULT_FORMATTER = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
+BASE_HANDLERS = {
+    "RotatingFileHandler": RotatingFileHandler,
+}
+CUSTOM_HANDLERS = {
+    'WS': WebsocketHandler,
+    "BUFFER": LogBufferHandler,
+}

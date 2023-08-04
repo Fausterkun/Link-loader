@@ -1,16 +1,13 @@
-import logging
-import os.path
-from logging.handlers import RotatingFileHandler
-
 import yaml
+import os.path
+import logging
 
-from linker_app import log_buffer, socketio
-from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
+from flask.logging import default_handler
+
+# from linker_app.utils.logger import get_handler
+from linker_app.utils.logger import RotatingFileHandler, WebsocketHandler, LogBufferHandler
 
 BASE_CONFIG_NAME = 'config.yaml'
-
-HANDLERS = logging._handlers
-
 
 
 def load_config(file_path):
@@ -19,17 +16,8 @@ def load_config(file_path):
     return config
 
 
-def configure_logging(app):
+def configure_logging(app, socketio, log_buffer):
     """Set logger level and add necessary handlers"""
-
-    # TODO: finish that
-    # for logger in (
-    #         app.logger,
-    #         logging.getLogger('sqlalchemy'),
-    #         logging.getLogger('other_package'),
-    # ):
-    #     logger.addHandler(default_handler)
-    #     logger.addHandler(mail_handler)
 
     # config log buffer:
     logging_conf = app.config["LOGGING"]
@@ -74,7 +62,7 @@ def _add_file_handler(app, conf: dict):
     app.logger.addHandler(handler)
 
 
-def _add_buffer_handler(app, buffer_obj, conf):
+def _add_buffer_handler(app, log_buffer, conf):
     """Setup buffer obj and set handler that store all new logs"""
     formatter_conf = conf["FORMATTER"]
     level = conf["LEVEL"]
@@ -87,7 +75,7 @@ def _add_buffer_handler(app, buffer_obj, conf):
     log_buffer.max_size = max_size
 
     # create handler
-    handler = LogBufferHandler(buffer_obj=buffer_obj)
+    handler = LogBufferHandler(log_buffer=log_buffer)
     handler.setLevel(level)
 
     # setup formatter for handler
@@ -109,6 +97,7 @@ def _add_ws_handler(app, socket_obj, conf):
     namespace = conf["NAMESPACE"]
     level = conf["LEVEL"]
 
+    # handler = WebsocketHandler(socket_obj, event_name, level=level, namespace=namespace)
     handler = WebsocketHandler(socket_obj, event_name, level=level, namespace=namespace)
     formatter = logging.Formatter(**formatter_conf)
     handler.setFormatter(formatter)

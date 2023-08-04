@@ -1,7 +1,7 @@
 import flask
 from flask import render_template, request, flash
 
-from linker_app import socketio, log_buffer, counter  # noqa F401
+from linker_app import socketio, log_buffer # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
 from linker_app.main.service.routes_handlers import link_handler
@@ -52,7 +52,6 @@ def links():
 @bp.route("/logs", methods=["GET"])
 def logs():
     app.logger.info("User visit logs page")
-    # app.logger.info(str(counter))
     return render_template("logs.html")
 
 
@@ -61,14 +60,14 @@ def logs():
 
 @socketio.on("connect", namespace="/logs")
 def connect():
-    last_logs = log_buffer.get_last()  # copy last logs
+    last_logs = log_buffer.get_last()
     socketio.emit(
         event="init_logs",
         to=getattr(request, "sid", None),
-        data={"logs": last_logs[:]},
+        data={"logs": last_logs},
         namespace="/logs",
     )
-    app.logger.info("Websocket connection to /logs page")
+    # app.logger.info("Websocket connection to /logs page")
 
 
 @socketio.on_error_default  # handles all namespaces without an explicit error handler
