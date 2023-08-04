@@ -28,7 +28,8 @@ def get_revisions():
 def test_migrations_stairway(app, revision: Script):
     # alembic_config = app.extensions["migrate"].migrate.get_config()
     with app.app_context():
-        alembic_config = current_app.extensions['migrate'].migrate.get_config()
+        # TODO: change it to flask-migrate upgrade/downgrade
+        alembic_config = current_app.extensions["migrate"].migrate.get_config()
         upgrade(alembic_config, revision.revision)
 
         downgrade(alembic_config, revision.down_revision or "-1")

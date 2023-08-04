@@ -1,5 +1,5 @@
 class ServerError(ConnectionError):
-    """ Error at server, try latter """
+    """Error at server, try latter"""
 
 
 class SaveToDatabaseError(ServerError):
@@ -7,8 +7,8 @@ class SaveToDatabaseError(ServerError):
 
 
 class ValidationError(ValueError):
-    """ Error due check value """
+    """Error due check value"""
 
 
 class UrlValidationError(ValidationError):
-    """ Value is not a url """
+    """Value is not a url"""

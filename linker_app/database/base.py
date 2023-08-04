@@ -1,10 +1,10 @@
-from sqlalchemy.orm import declared_attr
+from sqlalchemy import MetaData, ForeignKey, Integer, Column
 from flask_sqlalchemy.model import Model
-from sqlalchemy import MetaData, Integer, Column
+from sqlalchemy.orm import declared_attr
 
 
 class IdModel(Model):
-    """ Base class with id initialized by default """
+    """Base class with id initialized by default"""
 
     @declared_attr
     def id(cls):

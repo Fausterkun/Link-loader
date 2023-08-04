@@ -1,7 +1,5 @@
 import copy
 import logging
-from logging.handlers import RotatingFileHandler, BufferingHandler
-from linker_app.utils.handlers import BASE_HANDLERS, CUSTOM_HANDLERS, DEFAULT_FORMATTER
 
 
 def get_handler(name: str, **params):
@@ -12,10 +10,12 @@ def get_handler(name: str, **params):
     elif name in CUSTOM_HANDLERS:
         handler = CUSTOM_HANDLERS[name]
     else:
-        raise HandlerNotImplemented("Handler with name: {} is not implemented.".format(name))
+        raise HandlerNotImplemented(
+            "Handler with name: {} is not implemented.".format(name)
+        )
 
     if "HANDLER" in params:
-        handler = handler(**params['HANDLER'])
+        handler = handler(**params["HANDLER"])
     else:
         handler = handler()
 
@@ -25,7 +25,6 @@ def get_handler(name: str, **params):
         handler.setFormatter(formatter_conf)
 
     return handler
-
 
 
 class LogBuffer:

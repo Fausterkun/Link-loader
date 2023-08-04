@@ -1,26 +1,25 @@
-import flask
-from flask import render_template, request, flash
+from flask import render_template, request, flash, current_app
+from flask_wtf.csrf import CSRFError
 
-from linker_app import socketio, log_buffer # noqa F401
+from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
-from linker_app.main.service.routes_handlers import link_handler
+from linker_app.service.routes_handlers import link_handler
 from linker_app.main.exceptions import UrlValidationError, SaveToDatabaseError
 
-app = flask.current_app
+app = current_app
 
 
 @bp.route("/")
 @bp.route("/index")
 def index():  # put application's code here
     app.logger.warning("User visit index page")
-    # return render_template(os.path.join(BASE_PATH, 'templates', 'index.html'))
     return render_template("index.html")
 
 
 @bp.route("/links", methods=["GET", "POST"])
 def links():
-    template_name = 'links.html'
+    template_name = "links.html"
 
     app.logger.info("User visit links page")
     url_form = UrlForm()
@@ -67,10 +66,14 @@ def connect():
         data={"logs": last_logs},
         namespace="/logs",
     )
-    # app.logger.info("Websocket connection to /logs page")
 
 
 @socketio.on_error_default  # handles all namespaces without an explicit error handler
-def default_error_handler(e):
+def socketio_error_handler(e):
     # TODO: add logger here
     app.logger.error(e)
+
+
+@bp.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400

@@ -1,6 +1,5 @@
 import logging
 
-import yaml
 import pika
 from pika import BlockingConnection, ConnectionParameters, BasicProperties
 from pika.exceptions import AMQPConnectionError

@@ -55,7 +55,7 @@ class LogBuffer(object):
 
 
 class HandlerNotImplemented(ValueError):
-    """ Handler with that name doesn't exist """
+    """Handler with that name doesn't exist"""
 
 
 class WebsocketHandler(logging.Handler):
@@ -63,6 +63,7 @@ class WebsocketHandler(logging.Handler):
 
     def __init__(self, event_name, namespace, *args, **kwargs):
         from linker_app import socketio
+
         self._socketio = socketio  # current_app.extensions['socketio']
         self.event = event_name
         self.namespace = namespace
@@ -75,7 +76,7 @@ class WebsocketHandler(logging.Handler):
             data=dict(
                 message=self.formatter.format(record),
                 level=record.levelname,
-            )
+            ),
         )
 
 
@@ -84,6 +85,7 @@ class LogBufferHandler(logging.Handler):
 
     def __init__(self, max_size=50, *args, **kwargs):
         from linker_app import log_buffer
+
         self._buffer_obj: LogBuffer = log_buffer
         self._buffer_obj.max_size = max_size
 
@@ -91,10 +93,7 @@ class LogBufferHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         self._buffer_obj.add_message(
-            dict(
-                message=self.formatter.format(record),
-                level=record.levelname
-            )
+            dict(message=self.formatter.format(record), level=record.levelname)
         )
 
 
@@ -103,6 +102,6 @@ BASE_HANDLERS = {
     "RotatingFileHandler": RotatingFileHandler,
 }
 CUSTOM_HANDLERS = {
-    'WS': WebsocketHandler,
+    "WS": WebsocketHandler,
     "BUFFER": LogBufferHandler,
 }

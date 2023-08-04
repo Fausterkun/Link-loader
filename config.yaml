@@ -25,7 +25,10 @@ SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
 SQLALCHEMY_TIMEOUT: 30 # sec
 WTF_CSRF_SECRET_KEY: 'a random string'
-#TEST_LINKER_APP_PG_URL: "postgresql://test:test@localhost/d123131s" # *DB_URL  # production db used also for test. change it if needed
+
+# if no table specified for this, then important to add slash at the end postgresql://test:test@localhost/"
+#CI_LINKER_APP_PG_URI: *DB_URL # production db used also for test. change it if needed
+CI_LINKER_APP_PG_URI: "postgresql://test:test@localhost/test_db"
 
 SOCKETIO:
   logger: true

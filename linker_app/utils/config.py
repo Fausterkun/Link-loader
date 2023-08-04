@@ -2,12 +2,14 @@ import yaml
 import os.path
 import logging
 
-from flask.logging import default_handler
-
 # from linker_app.utils.logger import get_handler
-from linker_app.utils.logger import RotatingFileHandler, WebsocketHandler, LogBufferHandler
+from logging.handlers import RotatingFileHandler
+from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
 
-BASE_CONFIG_NAME = 'config.yaml'
+# TODO: remove default handler from flask.logger
+# from flask.logging import default_handler
+
+BASE_CONFIG_NAME = "config.yaml"
 
 
 def load_config(file_path):
@@ -18,25 +20,19 @@ def load_config(file_path):
 
 def configure_logging(app, socketio, log_buffer):
     """Set logger level and add necessary handlers"""
-
-    # config log buffer:
     logging_conf = app.config["LOGGING"]
 
-    # setup global logging level
+    # base configs for all loggers
     level = logging_conf["LEVEL"]
     app.logger.setLevel(level)
 
-    # add rotating file handler with app config
+    # setup custom handlers:
     file_conf = logging_conf["FILE"]
     _add_file_handler(app, file_conf)
 
-    # add buffer handler for store all new log in memory
     buffer_conf = logging_conf.get("BUFFER", None)
-    if buffer_conf:
-        # add log buffer obj to handler and configure it
-        _add_buffer_handler(app, log_buffer, buffer_conf)
+    _add_buffer_handler(app, log_buffer, buffer_conf)
 
-    # add websocket handler for realtime logs monitoring
     ws_conf = logging_conf["WS"]
     _add_ws_handler(app, socketio, ws_conf)
 
@@ -91,7 +87,6 @@ def _add_ws_handler(app, socket_obj, conf):
     """
     Set handler for real-time notification through ws connection to all connected clients
     """
-    # handler_conf: dict = conf["HANDLER"]
     formatter_conf = conf["FORMATTER"]
     event_name = conf["EVENT_NAME"]
     namespace = conf["NAMESPACE"]

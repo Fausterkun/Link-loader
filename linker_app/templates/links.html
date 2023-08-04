@@ -20,15 +20,15 @@
     </table>
     <div class="container mt-5">
         <form id="add-link" method="post">
-            {% if errors %}
-                <ul>
-                    {% for error in errors %}
-                        {% for name, message in error.items() %}
-                            <li>{{ name }} : {{ message }} </li>
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-            {% endif %}
+{#            {% if errors %}#}
+{#                <ul>#}
+{#                    {% for error in errors %}#}
+{#                        {% for name, message in error.items() %}#}
+{#                            <li>{{ name }} : {{ message }} </li>#}
+{#                        {% endfor %}#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            {% endif %}#}
             {% if url_form.link.errors %}
                 <ul class="errors">
                     {% for error in url_form.link.errors %}
