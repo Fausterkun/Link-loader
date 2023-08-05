@@ -2,29 +2,8 @@ import copy
 import logging
 
 
-def get_handler(name: str, **params):
-    # setup handler with params by his name
-    if name in BASE_HANDLERS:
-        handler = BASE_HANDLERS[name]
-
-    elif name in CUSTOM_HANDLERS:
-        handler = CUSTOM_HANDLERS[name]
-    else:
-        raise HandlerNotImplemented(
-            "Handler with name: {} is not implemented.".format(name)
-        )
-
-    if "HANDLER" in params:
-        handler = handler(**params["HANDLER"])
-    else:
-        handler = handler()
-
-    # support only default formatter
-    if "FORMATTER" in params:
-        formatter_conf = logging.Formatter(**params["FORMATTER"])
-        handler.setFormatter(formatter_conf)
-
-    return handler
+class HandlerNotImplemented(ValueError):
+    """Handler with that name doesn't exist"""
 
 
 class LogBuffer:

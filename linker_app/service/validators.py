@@ -1,4 +1,5 @@
 import re
+from linker_app.service.exceptions import ValidationError
 
 
 class RegexValidator:

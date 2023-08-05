@@ -1,6 +1,7 @@
 # Project special files #
 !/sub_project/
 compose.env
+future_projects/
 # Django #
 *.log.*
 *.pot

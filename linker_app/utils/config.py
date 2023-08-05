@@ -2,7 +2,6 @@ import yaml
 import os.path
 import logging
 
-# from linker_app.utils.logger import get_handler
 from logging.handlers import RotatingFileHandler
 from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
 

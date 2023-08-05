@@ -3,7 +3,7 @@ class ServerError(ConnectionError):
 
 
 class SaveToDatabaseError(ServerError):
-    '"" Error due save to database, pls try latter ""'
+    """"Error due save to database, pls try latter"""
 
 
 class ValidationError(ValueError):

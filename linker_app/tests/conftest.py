@@ -21,12 +21,12 @@ def postgres() -> str:
     tmp_url = str(URL(pg_url).with_path(tmp_name))
 
     create_database(tmp_url)
-
+    print('database created')
     try:
         yield tmp_url
     finally:
-        pass
-        # drop_database(tmp_url)
+        drop_database(tmp_url)
+        print('database dropped')
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 120
-exclude= git,migrations,/tests/__init__,venv, sub_project, ./linker_app/db/alembic/versions/
+exclude= git,migrations,/tests/__init__,venv, sub_project, ./linker_app/db/alembic/versions/,future_projects
 per-file-ignores =
     # ignore unused import and import from uncorrect places
     # link_loader.py:F401,E402,F403

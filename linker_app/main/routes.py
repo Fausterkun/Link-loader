@@ -5,7 +5,7 @@ from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
 from linker_app.service.routes_handlers import link_handler
-from linker_app.main.exceptions import UrlValidationError, SaveToDatabaseError
+from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
 
 app = current_app
 
@@ -35,7 +35,9 @@ def links():
                 link_handler(url_form.link.data)
             except (UrlValidationError, SaveToDatabaseError) as e:
                 # flush message to client about error
-                flash(e.args[0])
+                error_msg = e.args[0]
+                # flash(error_msg)
+                url_form.link.errors.append(error_msg)
                 return render_template(template_name, url_form=url_form, context=context), 400
 
             flash("Link saved successfully")
@@ -52,6 +54,11 @@ def links():
 def logs():
     app.logger.info("User visit logs page")
     return render_template("logs.html")
+
+
+@bp.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400
 
 
 # ------------- Websocket dynamic log notifications ------------------
@@ -72,8 +79,3 @@ def connect():
 def socketio_error_handler(e):
     # TODO: add logger here
     app.logger.error(e)
-
-
-@bp.errorhandler(CSRFError)
-def handle_csrf_error(e):
-    return render_template('csrf_error.html', reason=e.description), 400

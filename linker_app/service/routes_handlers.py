@@ -1,14 +1,14 @@
 import json
-import logging
-
 from urllib.parse import urlparse, parse_qs
+
+import flask
 from sqlalchemy.exc import SQLAlchemyError
 
 from linker_app import db
 from linker_app.database.query import create_or_update_link
-from linker_app.main.exceptions import UrlValidationError, SaveToDatabaseError
+from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
 
-log = logging.getLogger()
+app = flask.current_app
 
 
 def link_handler(link: str):
@@ -22,14 +22,15 @@ def link_handler(link: str):
     # add link to db or update it unavailable_times counter
     try:
         create_or_update_link(**parsed)
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         # TODO: add log info with e
+        app.logger.error("Error due try to save in db. \n {0}".format(e))
         db.session.rollback()  # Roll back the transaction in case of an error
         raise SaveToDatabaseError(
             "Can't save link to database, try again latter or say system admin."
         )
 
-    return True, {}
+    return
 
 
 def parse_link(link: str):
