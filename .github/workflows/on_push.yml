@@ -10,6 +10,7 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
 
+      FLASK_APP: "entrypoint"
       LINKER_APP_MESSAGE_QUEUE: "redis://redis"
       LINKER_APP_MESSAGE_QUEUE_CHANNEL: "linker-app"
       LINKER_APP_SECRET_KEY: "SECRET_KEY_FROM_ENV"
