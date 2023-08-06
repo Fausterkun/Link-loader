@@ -3,12 +3,13 @@
 all:
 	@echo "devenv			- create and setup development virtual env using poetry" 
 	@echo "run			- run web app"
-	@echo "migrate			- run db migrations"
+	@echo "migrate			- run db migrations and upgrade db"
 	@echo "docker 			- run web app at container"
 	@echo "build 			- docker compose build"
 	@echo "up			- up docker compose"
 	@echo "down 			- down docker compose"
 	@echo "redis	 		- up redis container at 6379 port"
+	@echo "rabbitmq 		- run web rabbitmq app at 5672 port"
 	@echo "test			- run testing"
 	@echo "lint			- run flake8 linting"
 	@echo "log_clear		- delete all files in logs/ dir"
@@ -21,7 +22,7 @@ run:
 	python entrypoint.py
 
 migrate:
-	flask db migrate
+	flask db migrate && flask db upgrade
 
 clean:
 	rm -rf dist/
@@ -79,9 +80,6 @@ test:
 lint:
 	flake8 .
 	
-black:
-	black .
-
 log_clear:
 	rm ./logs/*
 
