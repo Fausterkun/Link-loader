@@ -4,7 +4,7 @@ from flask_wtf.csrf import CSRFError
 from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
-from linker_app.service.routes_handlers import link_handler
+from linker_app.service.handlers import link_handler
 from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
 
 app = current_app

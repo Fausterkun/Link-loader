@@ -22,7 +22,8 @@ run:
 	python entrypoint.py
 
 migrate:
-	flask db migrate && flask db upgrade
+	flask db migrate || true 
+	flask db upgrade 
 
 clean:
 	rm -rf dist/
