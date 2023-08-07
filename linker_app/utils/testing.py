@@ -1,4 +1,9 @@
 from bs4 import BeautifulSoup
+from faker import Faker
+
+LINKS_IN_TEST_DATABASE = 300
+
+fake = Faker()
 
 
 def get_csrf_token(client, url):
@@ -50,3 +55,13 @@ def get_failed_links():
         "google.com/~as_db3.2123/134-1a",
     )
     return failed_data
+
+
+def get_fake_urls(count: int = None) -> set:
+    """ generate unique fake urls """
+    if not count:
+        count = LINKS_IN_TEST_DATABASE
+    fake_urls = set()
+    while len(fake_urls) < count:
+        fake_urls.add(fake.url())
+    return fake_urls
