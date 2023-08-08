@@ -9,9 +9,11 @@ from flask import current_app
 
 def create_or_update_link(**params):
     """Create if link object is not exists yet, or update it unavailable_times to zero"""
+    # TODO: can be improved using upsert
     url = params["url"]
     link = Links.query.filter_by(url=url).first()
 
+    # if already in db then update, else insert
     if link:
         link.unavailable_times = 0
     else:

@@ -17,7 +17,7 @@ def link_handler(link: str):
      :return status:bool, errors:list(dict(str, str))
     """
     # serialize to Link obj
-    parsed = parse_link(link)
+    parsed = parse_url(link)
 
     # add link to db or update it unavailable_times counter
     try:
@@ -33,7 +33,7 @@ def link_handler(link: str):
     return
 
 
-def parse_link(link: str):
+def parse_url(link: str):
     """serialize str to dict object"""
     try:
         parsed_link = urlparse(link)
