@@ -1,12 +1,11 @@
-from flask import render_template, request, flash, current_app
+from flask import render_template, request, current_app
 from flask_wtf.csrf import CSRFError
 
 from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
 from linker_app.database.query import get_links
-from linker_app.service.handlers import link_handler
-from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
+from linker_app.service.handlers import link_form_handler
 
 app = current_app
 
@@ -21,39 +20,21 @@ def index():  # put application's code here
 @bp.route("/links", methods=["GET", "POST"])
 def links():
     template_name = "links.html"
-
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-
+    status_code = 200
     app.logger.info("User visit links page")
     url_form = UrlForm()
 
+    # handle link form
     if request.method == "POST":
         app.logger.info("Post method call")
-        # if message from url form
-        if url_form.validate_on_submit():
-            # validate link and send it to db
-            try:
-                link_handler(url_form.link.data)
-            except (UrlValidationError, SaveToDatabaseError) as e:
-                # flush message to client about error
-                error_msg = e.args[0]
-                # flash(error_msg)
-                url_form.link.errors.append(error_msg)
-                links = get_links(page=page, per_page=per_page)
-                return render_template(template_name, url_form=url_form, links=links), 400
+        url_form, url_form_success = link_form_handler(url_form)
+        status_code: int = 201 if url_form_success else 400
 
-            flash("Link saved successfully")
-            url_form = UrlForm()
-            links = get_links(page=page, per_page=per_page)
-            return render_template(template_name, url_form=url_form, links=links), 201
-        else:
-            flash("Value is not a url.")
-            links = get_links(page=page, per_page=per_page)
-            return render_template(template_name, url_form=url_form, links=links), 400
-
+    # get paginated links
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
     links = get_links(page=page, per_page=per_page)
-    return render_template(template_name, url_form=url_form, links=links)
+    return render_template(template_name, url_form=url_form, links=links), status_code
 
 
 @bp.route("/logs", methods=["GET"])
