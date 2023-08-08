@@ -5,7 +5,7 @@ import pytest
 
 from linker_app.database.query import get_links, create_or_update_links, create_or_update_link
 from linker_app.database.schema import Links
-from linker_app.service.handlers import parse_url
+from linker_app.utils.query import parse_url
 from linker_app import db
 from linker_app.utils.testing import get_fake_urls, fake
 
