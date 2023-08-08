@@ -4,68 +4,14 @@
 
 {% block content %}
 <!-- Data will be added dynamically using JavaScript -->
-<div class="container mt-4">
-    <h1>Link Table</h1>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Protocol</th>
-            <th>URL</th>
-            <th>Domain</th>
-            <th>Domain Zone</th>
-            <th>Path</th>
-            <th>Query Params</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for link in links %}
-        <tr>
-            <td>{{ link.url }}</td>
-            <td>{{ link.protocol }}</td>
-            <td>{{ link.domain }}</td>
-            <td>{{ link.domain_zone }}</td>
-            <td>{{ link.path }}</td>
-            <td>
-                {% if link.params %}
-                {% for key, value in link.params.items() %}
-                {{ key }}: {{ value }}<br>
-                {% endfor %}
-                {% else %}
-                N/A
-                {% endif %}
-            </td>
-            <td>{{ link.unavailable_times }}</td>
-        </tr>
-        {% endfor %}
-
-        <!-- Add more rows as needed -->
-        </tbody>
-    </table>
-</div>
 
 <div class="container mt-5">
     <form id="add-link" method="post">
-        {# {% if errors %}#}
-        {#
-        <ul>#}
-            {# {% for error in errors %}#}
-            {# {% for name, message in error.items() %}#}
-            {#
-            <li>{{ name }} : {{ message }}</li>
-            #}
-            {# {% endfor %}#}
-            {# {% endfor %}#}
-            {#
-        </ul>
-        #}
-        {# {% endif %}#}
-        {% if url_form.link.errors %}
         <ul class="errors">
             {% for error in url_form.link.errors %}
             <li>{{ error }}</li>
             {% endfor %}
         </ul>
-        {% endif %}
         {{ url_form.csrf_token }}
         {{ url_form.link.label }}
         {{ url_form.link(size=20, class="form-control") }}
@@ -79,5 +25,71 @@
         </div>
         <button class="btn btn-primary" type="submit" value="send">Send file</button>
     </form>
+</div>
+<div class="container mt-4">
+    <h1>Link Table</h1>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if links.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ links.prev_num }}&per_page={{ links.per_page }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for page_num in links.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+            {% if links.page == page_num %}
+            <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_num }}&per_page={{ links.per_page }}">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if links.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ links.next_num }}&per_page={{ links.per_page }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Protocol</th>
+            <th>URL</th>
+            <th>Domain</th>
+            <th>Domain Zone</th>
+            <th>Path</th>
+            <th>Query Params</th>
+            <th>Unavailable times</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for link in links %}
+        <tr>
+            <td>{{ link.url }}</td>
+            <td>{{ link.protocol }}</td>
+            <td>{{ link.domain }}</td>
+            <td>{{ link.domain_zone }}</td>
+            <td>{{ link.path }}</td>
+            <td>
+                {% if link.params %}
+                {{ link.params }}
+                {% else %}
+                None
+                {% endif %}
+            </td>
+            <td>{{ link.unavailable_times }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -37,12 +37,13 @@ def create_or_update_links(links: list[Links]):
     db.session.commit()
 
 
-def get_links(page: int = None, per_page: int = None, max_per_page: int = None):
+def get_links(page: int = None, per_page: int = None, max_per_page: int = None, **params):
     """
      Query to get all links in db with pagination, max links in query got from config
      At None values params will be gotten from request(see doc or source code)
      """
     if not max_per_page:
-        max_per_page = min(max_per_page, current_app.config.get('LINKS_MAX_PER_PAGE', 100))
+        max_per_page = current_app.config.get('LINKS_MAX_PER_PAGE', 100)
+    max_per_page = min(max_per_page, current_app.config.get('LINKS_MAX_PER_PAGE', 100))
     links = Links.query.paginate(page=page, per_page=per_page, max_per_page=max_per_page)
     return links

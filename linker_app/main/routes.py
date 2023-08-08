@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFError
 from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
 from linker_app.main.forms import UrlForm
+from linker_app.database.query import get_links
 from linker_app.service.handlers import link_handler
 from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
 
@@ -21,11 +22,12 @@ def index():  # put application's code here
 def links():
     template_name = "links.html"
 
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
     app.logger.info("User visit links page")
     url_form = UrlForm()
-    context = {
-        "links": {},
-    }
+
     if request.method == "POST":
         app.logger.info("Post method call")
         # if message from url form
@@ -38,16 +40,20 @@ def links():
                 error_msg = e.args[0]
                 # flash(error_msg)
                 url_form.link.errors.append(error_msg)
-                return render_template(template_name, url_form=url_form, context=context), 400
+                links = get_links(page=page, per_page=per_page)
+                return render_template(template_name, url_form=url_form, links=links), 400
 
             flash("Link saved successfully")
             url_form = UrlForm()
-            return render_template(template_name, url_form=url_form, context=context), 201
+            links = get_links(page=page, per_page=per_page)
+            return render_template(template_name, url_form=url_form, links=links), 201
         else:
             flash("Value is not a url.")
-            return render_template(template_name, url_form=url_form, context=context), 400
+            links = get_links(page=page, per_page=per_page)
+            return render_template(template_name, url_form=url_form, links=links), 400
 
-    return render_template(template_name, url_form=url_form, context=context)
+    links = get_links(page=page, per_page=per_page)
+    return render_template(template_name, url_form=url_form, links=links)
 
 
 @bp.route("/logs", methods=["GET"])

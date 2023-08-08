@@ -1,4 +1,5 @@
 import copy
+import math
 
 import pytest
 
@@ -10,16 +11,41 @@ from linker_app.utils.testing import get_fake_urls, fake
 
 
 def test_get_links(app):
-    """ test get links """
-    urls = get_fake_urls(100)
-    parsed_urls = [parse_url(url) for url in urls]
+    """ test get links query """
+    # 1. Crete fake urls
+    urls_count = 127
+    urls = get_fake_urls(urls_count)
+
     with app.app_context():
+        # 2. Insert new urls
         with db.session.begin():
+            parsed_urls = [parse_url(url) for url in urls]
             db.session.bulk_insert_mappings(Links, parsed_urls)
-        links = get_links(page=1, per_page=100, max_per_page=200)
-    assert links.total == 100
-    for link in links:
-        assert link.url in urls
+
+        # 3. Get links and check pagination
+        per_page = 3
+        pages_count = math.ceil(urls_count / per_page)
+
+        # prepare check set with urls
+        check_urls = copy.copy(urls)
+
+        # iterate over pages and remove url from check set
+        for page in range(1, pages_count + 1):
+            links = get_links(page=page, per_page=per_page)  # , max_per_page=max_per_page)
+
+            # if not last page
+            if page < pages_count:
+                for link in links:
+                    assert link.url in check_urls
+                    check_urls.remove(link.url)
+                continue
+
+            # at the last page
+            for link in links:
+                assert link.url in check_urls
+                check_urls.remove(link.url)
+            # check that all urls were in query (check set is empty)
+            assert len(check_urls) == 0
 
 
 def test_create_or_update_link(app):
