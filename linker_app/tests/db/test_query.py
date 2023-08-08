@@ -69,10 +69,8 @@ def test_create_or_update_links(app):
             checked_urls.remove(link.url)
 
         # 2. Update their unavailable_times
-        # links = Links.query.filter(Links.url.in_(urls))
         for link in links:
             link.unavailable_times = 2
-        # db.session.add_all(links)
         db.session.commit()
 
         # get it and check that unavailable_times != 0
