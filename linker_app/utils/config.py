@@ -8,7 +8,9 @@ from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
 # TODO: remove default handler from flask.logger
 # from flask.logging import default_handler
 
+FILE_MAX_SIZE = 1024  # 1 kb
 BASE_CONFIG_NAME = "config.yaml"
+BASE_FILES_STORE_DIR = 'files'
 
 
 def load_config(file_path):
@@ -44,8 +46,7 @@ def _add_file_handler(app, conf: dict):
 
     # Create path for logs
     log_dir = os.path.dirname(handler_args["filename"])
-    if not os.path.exists(log_dir):
-        os.mkdir(log_dir)
+    os.makedirs(log_dir, exist_ok=True)
 
     handler = RotatingFileHandler(**handler_args)
     # TODO: may be refactor for all args in one call pass
@@ -91,7 +92,6 @@ def _add_ws_handler(app, socket_obj, conf):
     namespace = conf["NAMESPACE"]
     level = conf["LEVEL"]
 
-    # handler = WebsocketHandler(socket_obj, event_name, level=level, namespace=namespace)
     handler = WebsocketHandler(socket_obj, event_name, level=level, namespace=namespace)
     formatter = logging.Formatter(**formatter_conf)
     handler.setFormatter(formatter)

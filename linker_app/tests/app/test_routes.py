@@ -5,11 +5,14 @@ from linker_app.utils.testing import (
     get_correct_links,
     get_failed_links,
     get_csrf_token,
-    fake_urls_file_by_count,
-    fake_urls_file_by_size,
+    fake_file_with_urls,
+    fake_file_with_urls_with_size,
 )
-from linker_app.main.routes import links
-from linker_app.tests.conftest import client  # noqa: F401
+from linker_app.utils.config import FILE_MAX_SIZE
+
+
+# from linker_app.tests.conftest import client  # noqa: F401
+# from linker_app.main.routes import links
 
 
 # TODO: change all urls for usage with url_for
@@ -48,17 +51,37 @@ def test_add_link_failed(client, link):
     assert HTTPStatus.BAD_REQUEST == response.status_code
 
 
-# def test_add_file_link_success(client):
-#     url = url_for('main.links')
-#     pass
-#
-#
-# def test_file_bigger_size(client, app):
-#     url = url_for('main.links')
-#     size = app.config.get('FILE_MAX_SIZE', 1024)
-#     bigger_size = size + 1
-#     file = fake_urls_file_by_size(bigger_size)
-#     client.post({"file": file})
+def test_add_file_link_success(client):
+    url = '/links'
+    # url = url_for('links')
+    file = fake_file_with_urls(1, extension='.csv')
+    response = client.post(
+        url,
+        data=dict(
+            file=file,
+            csrf_token=get_csrf_token(client, url),
+            submit_file=True
+        )
+    )
+    assert HTTPStatus.CREATED == response.status_code
+
+
+def test_file_bigger_size(client):
+    url = '/links'
+    # url = url_for('links')
+    # size = client.application.config.get('FILE_MAX_SIZE')  # not use .get for be sure that size setuped
+    size = FILE_MAX_SIZE
+    bigger_size = size + 1
+    file = fake_file_with_urls_with_size(bigger_size, extension='.csv')
+    response = client.post(
+        url,
+        data=dict(
+            file=file,
+            csrf_token=get_csrf_token(client, url),
+            submit_file=True
+        )
+    )
+    assert HTTPStatus.BAD_REQUEST == response.status_code
 
 
 def test_file_incorrect_extensions():
