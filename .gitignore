@@ -1,7 +1,9 @@
 # Project special files #
 !/sub_project/
+linker_app/files/
 compose.env
 future_projects/
+
 # Django #
 *.log.*
 *.pot

@@ -3,9 +3,10 @@ from flask_wtf.csrf import CSRFError
 
 from linker_app import socketio, log_buffer  # noqa F401
 from linker_app.main import bp
-from linker_app.main.forms import UrlForm
+from linker_app.main.forms import UrlForm, FileForm
 from linker_app.database.query import get_links
-from linker_app.service.handlers import link_form_handler
+from linker_app.service.handlers import link_form_handler, file_form_handler
+from linker_app.utils.config import FILE_MAX_SIZE
 
 app = current_app
 
@@ -23,18 +24,21 @@ def links():
     status_code = 200
     app.logger.info("User visit links page")
     url_form = UrlForm()
-
-    # handle link form
-    if request.method == "POST":
+    file_form = FileForm(max_file_size=FILE_MAX_SIZE)
+    if url_form.is_submitted() and 'submit_link' in request.form:
         app.logger.info("Post method call")
         url_form, url_form_success = link_form_handler(url_form)
         status_code: int = 201 if url_form_success else 400
+
+    if file_form.is_submitted() and 'submit_file' in request.form:
+        file_form, form_success = file_form_handler(file_form)
+        status_code: int = 201 if form_success else 400
 
     # get paginated links
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
     links = get_links(page=page, per_page=per_page)
-    return render_template(template_name, url_form=url_form, links=links), status_code
+    return render_template(template_name, url_form=url_form, file_form=file_form, links=links), status_code
 
 
 @bp.route("/logs", methods=["GET"])

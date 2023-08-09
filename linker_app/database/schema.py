@@ -14,3 +14,11 @@ class Links(db.Model):
     path = db.Column(db.String(255))
     params = db.Column(db.JSON)
     unavailable_times = db.Column(db.Integer, default=0)
+
+
+class FileRequest(db.Model):
+    uuid = db.Column(db.UUID, default=uuid.uuid4, index=True)
+    finished = db.Column(db.Boolean, default=False)
+    all_urls = db.Column(db.Integer, nullable=True, default=None)
+    fail_count = db.Column(db.Integer, nullable=True, default=None)
+    success_count = db.Column(db.Integer, nullable=True, default=None)

@@ -1,7 +1,11 @@
+from io import BytesIO
+from typing import Tuple, Any
+
 from bs4 import BeautifulSoup
 from faker import Faker
 
 LINKS_IN_TEST_DATABASE = 300
+FILE_SIZE_IN_TEST = 1024  # kb
 
 fake = Faker()
 
@@ -65,3 +69,42 @@ def get_fake_urls(count: int = None) -> set:
     while len(fake_urls) < count:
         fake_urls.add(fake.url())
     return fake_urls
+
+
+def fake_file_with_urls_with_size(file_size: int = None, url_size: int = 255, extension: str = None) -> tuple[
+    BytesIO, str]:
+    """ create struct for flask file handler with current size """
+
+    # set given or random extension
+    if extension:
+        file_name = fake.file_name(extension=extension)
+    else:
+        file_name = fake.file_name()
+    if file_size is None:
+        file_size = FILE_SIZE_IN_TEST
+    url_str = ''
+    # add fake urls
+    while len(url_str) < file_size - url_size:
+        url_str += fake.url() + '\n'
+
+    # add useless char at the end of file for set correct file size
+    while len(url_str) < file_size:
+        url_str += 'f'
+    file = (BytesIO(url_str.encode()), file_name)
+    return file
+
+
+def fake_file_with_urls(count: int = None, extension: str = None) -> tuple[BytesIO, str]:
+    """ create struct for flask file handler with current number of urls """
+    # set given or random extension
+    if extension:
+        file_name = fake.file_name(extension=extension)
+    else:
+        file_name = fake.file_name()
+    # add fake urls
+    urls = get_fake_urls(count)
+    urls_str = "\n".join(urls)
+    for fake_url in urls:
+        print(fake_url)
+    file = (BytesIO(urls_str.encode()), file_name)
+    return file
