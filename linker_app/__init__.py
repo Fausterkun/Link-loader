@@ -12,6 +12,7 @@ from linker_app.utils.config import load_config  # noqa: E402
 from linker_app.utils.logger import LogBuffer  # noqa: E402
 
 from linker_app.rabbit_extension.rabbit import RQExtension
+from linker_app.utils.config import BASE_FILES_STORE_DIR
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ENV_VAR_PREFIX = "LINKER_APP_"
@@ -43,6 +44,13 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
 
     # clear env vars for security reasons
     clear_environ(lambda i: i.startswith(ENV_VAR_PREFIX))
+
+    # create dir for files
+    file_dir = app.config.get('FILES_STORE_DIR', None)
+    if not file_dir:
+        file_dir = BASE_FILES_STORE_DIR
+    file_path = os.path.join(BASE_DIR, file_dir)
+    os.makedirs(file_path, exist_ok=True)
 
     # set default(in memory) message queue while debug
     if os.environ.get("FLASK_DEBUG"):
