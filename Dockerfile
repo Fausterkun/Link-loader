@@ -58,8 +58,13 @@ RUN poetry install --no-interaction --no-ansi
 
 EXPOSE 5000
 
-#RUN chmod +x docker-entrypoint.sh
-CMD ["poetry", "run", "python3", "entrypoint.py"]
+#CMD ['make','migrate']
+#CMD ['make', 'run']
+#RUN ['poetry', 'run', 'python3', 'flask', 'db', 'migrate']
+#RUN ['poetry', 'run', 'python3', 'flask', 'db', 'upgrade']
+#CMD ["poetry", "run", "python3", "entrypoint.py"]
+RUN chmod +x docker-entrypoint.sh
+CMD ./docker-entrypoint.sh
 #CMD ["poetry", "run" ,"app", \
 #       "--host", "0.0.0.0", \
 #       "--port", "5000", \
