@@ -1,5 +1,4 @@
 from io import BytesIO
-from typing import Tuple, Any
 
 from bs4 import BeautifulSoup
 from faker import Faker
@@ -71,8 +70,8 @@ def get_fake_urls(count: int = None) -> set:
     return fake_urls
 
 
-def fake_file_with_urls_with_size(file_size: int = None, url_size: int = 255, extension: str = None) -> tuple[
-    BytesIO, str]:
+def fake_file_with_urls_with_size(file_size: int = None, url_size: int = 255, extension: str = None)\
+        -> tuple[BytesIO, str]:
     """ create struct for flask file handler with current size """
 
     # set given or random extension

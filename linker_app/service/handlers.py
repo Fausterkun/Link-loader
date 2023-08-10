@@ -1,12 +1,9 @@
 import os
 import uuid
-from typing import Tuple
 
 from flask import flash, current_app
-from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from sqlalchemy.exc import SQLAlchemyError
-from io import BytesIO
 
 from linker_app import db, BASE_DIR
 from linker_app.main.forms import UrlForm, FileForm
@@ -61,7 +58,7 @@ def file_form_handler(file_form: FileForm) -> tuple[FileForm, bool]:
             file_form.errors.appen(error_msg)
         else:
             flash("Link saved successfully")
-            # TODO: change it to auto url path for status
+            # TODO: change it to auto url path for request status info
             flash("Uuid of file processing request:\n{0}".format(filename))
             file_form = FileForm()
             approved = True
@@ -108,6 +105,3 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
         current_app.logger.error("Error due try to save in db. \n {0}".format(e))
 
     return error_msg, filename
-
-    # if error then change uuid and remove previous,
-    # create new request in db

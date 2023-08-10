@@ -1,4 +1,3 @@
-from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import URLField, SubmitField
 from flask_wtf.file import FileField, FileAllowed, FileRequired, FileSize
