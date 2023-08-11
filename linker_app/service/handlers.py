@@ -5,7 +5,7 @@ from flask import flash, current_app
 from werkzeug.datastructures import FileStorage
 from sqlalchemy.exc import SQLAlchemyError
 
-from linker_app import db, BASE_DIR
+from linker_app import db, APP_DIR, rabbit
 from linker_app.main.forms import UrlForm, FileForm
 from linker_app.utils.query import parse_url
 from linker_app.database.schema import FileRequest
@@ -79,8 +79,7 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
 
     # 1. give it uuid as name
     filename = str(uuid.uuid4())
-    path = os.path.join(BASE_DIR, current_app.config.get('FILES_STORE_DIR'), filename + ext)
-    # path = os.path.join(current_app.instance_path, current_app.config.get('FILES_STORE_DIR'), filename + ext)
+    path = os.path.join(APP_DIR, current_app.config.get('FILES_STORE_DIR'), filename + ext)
     try:
         # 2. Save fil to disk
         file.save(path)
@@ -88,6 +87,7 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
         db.session.add(FileRequest(uuid=filename))
         db.session.commit()
         # 4. send task to MQ [PASSED]
+        # rabbit.send_message('linker_app_file_parser')
 
     except OSError as e:
         error_msg = "Error due save obj to disk"
@@ -97,11 +97,14 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
         # delete file and rollback transaction
         try:
             os.remove(path)
-        except OSError as e:
-            current_app.logger.error("Error due try to remove file from disk. \n {0}".format(e))
+
+        except OSError as os_e:
+            current_app.logger.error("Error due try to remove file from disk. \n {0}".format(os_e))
 
         db.session.rollback()  # Roll back the transaction in case of an error
         error_msg = "Can't save link to database, try again latter or say system admin."
         current_app.logger.error("Error due try to save in db. \n {0}".format(e))
+
+    # TODO: handle rabbitmq connectio error
 
     return error_msg, filename

@@ -10,6 +10,7 @@ LOG_PATH: &LOG_PATH logs/app.log
 FILES_STORE_DIR: "files" # Relative path in app directory
 SECRET_KEY: "hack-my-secret-key"
 LINKS_MAX_PER_PAGE: 200
+
 #FILE_MAX_SIZE: 1024 # kb -> 1mb
 #URL_MAX_SIZE : 255 # bytes
 
@@ -21,15 +22,17 @@ SQLALCHEMY_TIMEOUT: 30 # sec
 WTF_CSRF_SECRET_KEY: 'a random string'
 
 # debug params:
-SQLALCHEMY_ECHO: False
-# if no table specified for this, then important to
-# add slash at the end postgresql://test:test@localhost/"
+SQLALCHEMY_ECHO: false
+
+# if no db table specified for run test, then important to
+# add a slash at the end of url to postgres. Example: postgresql://test:test@localhost/"
 CI_LINKER_APP_PG_URI: "postgresql://test:test@localhost/test_db"
 
 # --------- RabbitMQ module params: ---------
 RMQ_HOST: 'localhost'
 RMQ_PORT: '5672'
-RMQ_FILEQUEUE: 'linker_app_file_parser'
+RMQ_QUEUE: 'linker_app_file_parser'
+RMQ_DURABLE: true
 #RMQ_MODE: 'PERSISTENT_DELIVERY_MODE' 'linker_app_file_parser'
 
 #----------  External modules and logging settings: ----------

@@ -1,20 +1,23 @@
 import os.path
+
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from pathlib import Path
 
 from linker_app.database.base import metadata, IdModel
 from linker_app.utils.argparse import clear_environ, get_env_vars_by_prefix
 from linker_app.utils.config import load_config  # noqa: E402
 from linker_app.utils.logger import LogBuffer  # noqa: E402
-
 from linker_app.rabbit_extension.rabbit import RQExtension
 from linker_app.utils.config import BASE_FILES_STORE_DIR
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 ENV_VAR_PREFIX = "LINKER_APP_"
 load_dotenv(".env")
 
@@ -22,7 +25,7 @@ socketio = SocketIO()
 db = SQLAlchemy(model_class=IdModel, metadata=metadata)
 
 # init migrations in db directory
-migrate = Migrate(directory=os.path.join(BASE_DIR, "database", "migrations"))
+migrate = Migrate(directory=os.path.join(APP_DIR, "database", "migrations"))
 csrf = CSRFProtect()
 rabbit = RQExtension()
 
@@ -49,7 +52,7 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     file_dir = app.config.get('FILES_STORE_DIR', None)
     if not file_dir:
         file_dir = BASE_FILES_STORE_DIR
-    file_path = os.path.join(BASE_DIR, file_dir)
+    file_path = os.path.join(APP_DIR, file_dir)
     os.makedirs(file_path, exist_ok=True)
 
     # set default(in memory) message queue while debug
@@ -78,6 +81,7 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     csrf.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    rabbit.init_app(app)
 
     from linker_app.utils.config import configure_logging
     configure_logging(app, socketio, log_buffer)

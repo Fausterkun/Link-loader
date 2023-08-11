@@ -6,11 +6,11 @@ services:
       - ./compose.env
     ports:
       - "5432:5432"
-    volumes: 
+    volumes:
       - db_data:/var/lib/postgresql/data/
     networks:
       - app_network
-    restart: always 
+    restart: always
 
   redis:
     image: redis:latest
@@ -49,11 +49,50 @@ services:
       - app_network
     restart: always
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672" # RabbitMQ port
+      - "15672:15672" # Management UI port
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      service_net:
+      app_network:
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus_docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      service_net:
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      service_net:
+
 volumes:
   db_data:
+    driver: local
   static_value:
   media_value:
+  rabbitmq_data:
+    driver: local
+  grafana_data:
+    driver: local
+
 
 networks:
   app_network:
+    driver: bridge
+  service_net:
     driver: bridge
