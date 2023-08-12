@@ -6,6 +6,14 @@ class SaveToDatabaseError(ServerError):
     """"Error due save to database, pls try latter"""
 
 
+class SendToQueueError(ServerError):
+    """"Error due save to database, pls try latter"""
+
+
+class QueueConnectionError(ServerError):
+    """ Error with connection to RabbitMQ """
+
+
 class ValidationError(ValueError):
     """Error due check value"""
 

@@ -10,11 +10,15 @@ from linker_app.main.forms import UrlForm, FileForm
 from linker_app.utils.query import parse_url
 from linker_app.database.schema import FileRequest
 from linker_app.database.query import create_or_update_link
-from linker_app.service.exceptions import UrlValidationError, SaveToDatabaseError
+from linker_app.service.exceptions import (
+    UrlValidationError,
+    SaveToDatabaseError,
+    SendToQueueError,
+    QueueConnectionError
+)
 
 
 def link_form_handler(url_form: UrlForm) -> tuple[UrlForm, bool]:
-    # TODO: change it to call link_handler(link: str) for repeat use from api
     """
     Handler for UrlForm
     return new or previous file_form and bool (success or not)
@@ -41,8 +45,8 @@ def link_handler(url: str) -> None | str:
         parsed = parse_url(url)
         create_or_update_link(**parsed)
     except (UrlValidationError, SaveToDatabaseError) as e:
-        # add message about error
-        error_msg = e.args[0]
+        error_msg = "Error due link handle."
+        current_app.logger.error(f'Error due handle link:\n{e}')
     return error_msg
 
 
@@ -55,7 +59,7 @@ def file_form_handler(file_form: FileForm) -> tuple[FileForm, bool]:
     if file_form.validate_on_submit():
         error_msg, filename = file_handler(file_form.file.data)
         if error_msg:
-            file_form.errors.appen(error_msg)
+            file_form.errors.append(error_msg)
         else:
             flash("Link saved successfully")
             # TODO: change it to auto url path for request status info
@@ -87,11 +91,18 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
         db.session.add(FileRequest(uuid=filename))
         db.session.commit()
         # 4. send task to MQ [PASSED]
-        # rabbit.send_message('linker_app_file_parser')
+        rabbit.send_messages('linker_app_file_parser', filename)
 
-    except OSError as e:
-        error_msg = "Error due save obj to disk"
-        current_app.logger.error("Error due save file to disk. \n {0}".format(e))
+    except FileNotFoundError as e:
+        error_msg = "Error due save obj to disk. Possibly with App dir path setup."
+        current_app.logger.error(f"Error due save file to disk. Possibly with App dir path setup. \n {e}")
+
+    except FileExistsError as e:
+        # if file with that name already exists (lol uuid4, but ok just for show, and it still may-be)
+        # we can retry (if we use auto-generate name) or just raise exception
+        error_msg = "Can't save file to disk, try again latter or say system admin."
+        current_app.logger.error("Error due try to save on disk."
+                                 f" File with that name already exists: \n {e}")
 
     except SQLAlchemyError as e:
         # delete file and rollback transaction
@@ -99,12 +110,30 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
             os.remove(path)
 
         except OSError as os_e:
-            current_app.logger.error("Error due try to remove file from disk. \n {0}".format(os_e))
+            current_app.logger.fatal(
+                f"Error due try to remove file from disk."
+                f"\nFilename: {filename}"
+                f"\nFilepath: {path}"
+                f"\nError: {os_e}"
+            )
 
-        db.session.rollback()  # Roll back the transaction in case of an error
-        error_msg = "Can't save link to database, try again latter or say system admin."
-        current_app.logger.error("Error due try to save in db. \n {0}".format(e))
+        error_msg = "Can't save file to database, try again latter or say system admin."
+        current_app.logger.error(f"Error due try to save in db. \n {e}")
+        db.session.rollback()
 
-    # TODO: handle rabbitmq connectio error
+    except SendToQueueError as e:
+        # error due send to rabbitMQ message
+        error_msg = "Error due sending file to parser."
+        current_app.logger.error(f"Error due send message to RabbitMQ at file handling {e}")
+
+    except QueueConnectionError as e:
+        # error due send to rabbitMQ message
+        error_msg = "Error due sending file to parser."
+        current_app.logger.error(f"Error due send message to RabbitMQ at file handling {e}")
+
+    except OSError as e:
+        # unknown os error
+        current_app.app.logger.error(f"Error due handle incoming file. Filename {filename}", e)
+        error_msg = "Error due file handle."
 
     return error_msg, filename

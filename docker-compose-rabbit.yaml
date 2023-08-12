@@ -1,19 +1,22 @@
 version: '3.8'
 services:
-#  rabbitmq:
-#    image: rabbitmq:management
-#    ports:
-#      - "5672:5672" # RabbitMQ port
-#      - "15672:15672" # Management UI port
-#    volumes:
-#      - rabbitmq_data:/var/lib/rabbitmq
-#    networks:
-#      service_net:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: linker_app_rabbit
+    ports:
+      - "5672:5672" # RabbitMQ port
+      - "15672:15672" # Management UI port
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      service_net:
 
   prometheus:
     image: prom/prometheus
+    container_name: linker_app_prometheus
     volumes:
       - ./prometheus_docker/prometheus.yml:/etc/prometheus/prometheus.yml
+#      - prometheus-data:/prometheus
     ports:
       - "9090:9090"
     networks:
@@ -21,6 +24,7 @@ services:
 
   grafana:
     image: grafana/grafana
+    container_name: linker_app_grafana
     ports:
       - "3000:3000"
     volumes:
@@ -35,6 +39,8 @@ volumes:
     driver: local
   grafana_data:
     driver: local
+  prometheus-data:
+
 
 networks:
   service_net:
