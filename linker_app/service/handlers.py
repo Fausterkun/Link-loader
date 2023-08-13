@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -5,7 +6,7 @@ from flask import flash, current_app
 from werkzeug.datastructures import FileStorage
 from sqlalchemy.exc import SQLAlchemyError
 
-from linker_app import db, APP_DIR, rabbit, BASE_DIR
+from linker_app import db, rabbit, BASE_DIR
 from linker_app.main.forms import UrlForm, FileForm
 from linker_app.utils.query import parse_url
 from linker_app.database.schema import FileRequest
@@ -16,6 +17,8 @@ from linker_app.service.exceptions import (
     SendToQueueError,
     QueueConnectionError
 )
+
+logger = logging.getLogger(__name__)
 
 
 def link_form_handler(url_form: UrlForm) -> tuple[UrlForm, bool]:
@@ -31,6 +34,7 @@ def link_form_handler(url_form: UrlForm) -> tuple[UrlForm, bool]:
             url_form.link.errors.append(error_msg)
         else:
             flash("Link saved successfully")
+            logger.info(f'Link {url} saved successfully.')
             url_form = UrlForm()
             approved = True
     else:
@@ -43,10 +47,10 @@ def link_handler(url: str) -> None | str:
     error_msg = None
     try:
         parsed = parse_url(url)
-        create_or_update_link(**parsed)
+        create_or_update_link(db.session, **parsed)
     except (UrlValidationError, SaveToDatabaseError) as e:
         error_msg = "Error due link handle."
-        current_app.logger.error(f'Error due handle link:\n{e}')
+        logger.error(f'Error due handle link:\n{e}')
     return error_msg
 
 
@@ -95,14 +99,14 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
 
     except FileNotFoundError as e:
         error_msg = "Error due save obj to disk. Possibly with App dir path setup."
-        current_app.logger.error(f"Error due save file to disk. Possibly with App dir path setup. \n {e}")
+        logger.error(f"Error due save file to disk. Possibly with App dir path setup. \n {e}")
 
     except FileExistsError as e:
         # if file with that name already exists (lol uuid4, but ok just for show, and it still may-be)
         # we can retry (if we use auto-generate name) or just raise exception
         error_msg = "Can't save file to disk, try again latter or say system admin."
-        current_app.logger.error("Error due try to save on disk."
-                                 f" File with that name already exists: \n {e}")
+        logger.error("Error due try to save on disk."
+                     f" File with that name already exists: \n {e}")
 
     except SQLAlchemyError as e:
         # delete file and rollback transaction
@@ -110,7 +114,7 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
             os.remove(path)
 
         except OSError as os_e:
-            current_app.logger.fatal(
+            logger.fatal(
                 f"Error due try to remove file from disk."
                 f"\nFilename: {filename}"
                 f"\nFilepath: {path}"
@@ -118,18 +122,18 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
             )
 
         error_msg = "Can't save file to database, try again latter or say system admin."
-        current_app.logger.error(f"Error due try to save in db. \n {e}")
+        logger.error(f"Error due try to save in db. \n {e}")
         db.session.rollback()
 
     except SendToQueueError as e:
         # error due send to rabbitMQ message
         error_msg = "Error due sending file to parser."
-        current_app.logger.error(f"Error due send message to RabbitMQ at file handling {e}")
+        logger.error(f"Error due send message to RabbitMQ at file handling {e}")
 
     except QueueConnectionError as e:
         # error due send to rabbitMQ message
         error_msg = "Error due sending file to parser."
-        current_app.logger.error(f"Error due send message to RabbitMQ at file handling {e}")
+        logger.error(f"Error due send message to RabbitMQ at file handling {e}")
 
     except OSError as e:
         # unknown os error

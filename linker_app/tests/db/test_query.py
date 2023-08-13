@@ -55,7 +55,7 @@ def test_create_or_update_link(app):
 
     with app.app_context():
         # 1. do insert and check it:
-        create_or_update_link(**parsed_url)
+        create_or_update_link(session=db.session, **parsed_url)
 
         # check that inserted
         link = Links.query.filter_by(url=url).first()
@@ -70,7 +70,7 @@ def test_create_or_update_link(app):
         assert link.unavailable_times == 2
 
         # 3. check that unavailable_count changed to 0 if obj already in db
-        create_or_update_link(**parsed_url)
+        create_or_update_link(session=db.session, **parsed_url)
         link = Links.query.filter_by(url=url).first()
         assert link.unavailable_times == 0
 
@@ -83,7 +83,7 @@ def test_create_or_update_links(app):
 
     with app.app_context():
         # 1. Check that data inserted
-        create_or_update_links(parsed_urls)
+        create_or_update_links(session=db.session, links=parsed_urls)
         links = Links.query.filter(Links.url.in_(urls)).all()
 
         # check result nums:
@@ -105,7 +105,7 @@ def test_create_or_update_links(app):
             assert link.unavailable_times == 2
 
         # 3. Check that unavailable_times updated to 0 if obj exist
-        create_or_update_links(parsed_urls)
+        create_or_update_links(session=db.session, links=parsed_urls)
         links = Links.query.filter(Links.url.in_(urls))
         for link in links:
             assert link.unavailable_times == 0

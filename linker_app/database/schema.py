@@ -15,6 +15,9 @@ class Links(db.Model):
     params = db.Column(db.JSON)
     unavailable_times = db.Column(db.Integer, default=0)
 
+    def __repr__(self):
+        return "Links obj: {}".format(self.url)
+
 
 class FileRequest(db.Model):
     uuid = db.Column(db.UUID, default=uuid.uuid4, index=True)
