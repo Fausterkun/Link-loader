@@ -52,7 +52,7 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     file_dir = app.config.get('FILES_STORE_DIR', None)
     if not file_dir:
         file_dir = BASE_FILES_STORE_DIR
-    file_path = os.path.join(APP_DIR, file_dir)
+    file_path = os.path.join(BASE_DIR, file_dir)
     os.makedirs(file_path, exist_ok=True)
 
     # set default(in memory) message queue while debug

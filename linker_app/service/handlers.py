@@ -5,7 +5,7 @@ from flask import flash, current_app
 from werkzeug.datastructures import FileStorage
 from sqlalchemy.exc import SQLAlchemyError
 
-from linker_app import db, APP_DIR, rabbit
+from linker_app import db, APP_DIR, rabbit, BASE_DIR
 from linker_app.main.forms import UrlForm, FileForm
 from linker_app.utils.query import parse_url
 from linker_app.database.schema import FileRequest
@@ -83,7 +83,7 @@ def file_handler(file: FileStorage) -> tuple[None | str, str]:
 
     # 1. give it uuid as name
     filename = str(uuid.uuid4())
-    path = os.path.join(APP_DIR, current_app.config.get('FILES_STORE_DIR'), filename + ext)
+    path = os.path.join(BASE_DIR, current_app.config.get('FILES_STORE_DIR'), filename + ext)
     try:
         # 2. Save fil to disk
         file.save(path)

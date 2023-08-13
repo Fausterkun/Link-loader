@@ -8,6 +8,7 @@ HOST: '0.0.0.0'
 CORS_ALLOWED_ORIGINS: &CORS_ALLOWED "*"
 LOG_PATH: &LOG_PATH logs/app.log
 FILES_STORE_DIR: "files" # Relative path in app directory
+FILE_EXTENSION: "csv"
 SECRET_KEY: "hack-my-secret-key"
 LINKS_MAX_PER_PAGE: 200
 

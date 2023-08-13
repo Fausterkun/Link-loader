@@ -68,13 +68,8 @@ postgres:
 		-e POSTGRES_DB=test_db \
 		-d postgres:latest
 
-rabbitmq: 
-	docker stop linker_app_rmq || true
-	docker run --rm \
-		--name linker_app_rabbitmq \
-		-p 5672:5672 \
-		-d rabbitmq:latest
-
+rabbitmq:
+	docker compose -f docker-compose-rabbit.yaml up --build -d 
 test: 
 	pytest --disable-warnings
 
