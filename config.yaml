@@ -38,8 +38,11 @@ RMQ_QUEUE: 'linker_app_file_parser'
 RMQ_DURABLE: true
 #RMQ_MODE: 'PERSISTENT_DELIVERY_MODE' 'linker_app_file_parser'
 
-WORKER_PROC_NUM: 2
 
+#----------  Linker checker worker settings: ----------
+WORKER_PROC_NUM: 4  # setup here or count auto using os
+CHUNK_SIZE: 2500  # max link chunk for every process
+REQUEST_TIMEOUT: 5  # sec
 
 #----------  External modules and logging settings: ----------
 SOCKETIO:

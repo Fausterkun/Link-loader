@@ -13,7 +13,7 @@ from linker_app.utils.argparse import clear_environ, get_env_vars_by_prefix
 from linker_app.utils.config import load_config  # noqa: E402
 from linker_app.utils.logger import LogBuffer  # noqa: E402
 from linker_app.rabbit_extension.rabbit import RQExtension
-from linker_app.utils.config import BASE_FILES_STORE_DIR
+from linker_app.utils.config import BASE_FILES_DIR
 
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,7 +51,7 @@ def create_app(conf_file: str = "config.yaml", **kwargs):
     # create dir for files
     file_dir = app.config.get('FILES_STORE_DIR', None)
     if not file_dir:
-        file_dir = BASE_FILES_STORE_DIR
+        file_dir = BASE_FILES_DIR
     file_path = os.path.join(BASE_DIR, file_dir)
     os.makedirs(file_path, exist_ok=True)
 

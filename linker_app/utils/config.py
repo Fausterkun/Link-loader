@@ -10,7 +10,7 @@ from linker_app.utils.logger import WebsocketHandler, LogBufferHandler
 
 FILE_MAX_SIZE = 1024  # 1 kb
 BASE_CONFIG_NAME = "config.yaml"
-BASE_FILES_STORE_DIR = 'files'
+BASE_FILES_DIR = 'files'
 
 
 def load_config(file_path):
