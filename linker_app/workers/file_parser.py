@@ -1,23 +1,23 @@
 import sys
+import time
+import os.path
 import logging
 from logging import StreamHandler
-import os.path
-import time
 
 import pika
 from pika import ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 from sqlalchemy import update
-from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.engine import create_engine
 
+from linker_app import BASE_DIR
+from linker_app.utils.query import parse_url
 from linker_app.utils.config import BASE_CONFIG_NAME, load_config
 from linker_app.database.schema import FileRequest
 from linker_app.service.validators import UrlValidator
 from linker_app.service.exceptions import ValidationError
-from linker_app.utils.query import parse_url
-from linker_app import BASE_DIR
 
 from linker_app.workers.query import upsert_links_query
 
@@ -75,10 +75,9 @@ def worker():
 
 
 def callback(ch, method, properties, body):
+    f_name = body.decode()
+    logger.info(f" [x] Received message with filename: {f_name}")
     try:
-        logger.info(f" [x] Received {body.decode()}")
-        f_name = body.decode()
-        logger.info(f" [x] Assume f_name is: {f_name}")
         links, all_urls, success_count, fail_count = parse_file(f_name)
         with Session() as session:
             query = upsert_links_query(engine=engine, links=list(links.values()))
@@ -131,7 +130,6 @@ def parse_file(file_name: str) -> tuple[dict[str, dict], int, int, int]:
                 # validate line
                 validator(line)
                 # parse it
-                # add to validated list as Link obj
                 links[line] = parse_url(line)
                 success_count += 1
             except ValidationError:

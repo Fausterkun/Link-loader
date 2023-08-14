@@ -16,6 +16,8 @@ LINKS_MAX_PER_PAGE: 200
 #URL_MAX_SIZE : 255 # bytes
 
 # --------- Sqlalchemy settings ---------
+SQLITE_DATABASE_URI: "sqlite://"
+
 SQLALCHEMY_DATABASE_URI: &DB_URL "postgresql://test:test@localhost/test_db"
 SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
@@ -35,6 +37,9 @@ RMQ_PORT: '5672'
 RMQ_QUEUE: 'linker_app_file_parser'
 RMQ_DURABLE: true
 #RMQ_MODE: 'PERSISTENT_DELIVERY_MODE' 'linker_app_file_parser'
+
+WORKER_PROC_NUM: 2
+
 
 #----------  External modules and logging settings: ----------
 SOCKETIO:
