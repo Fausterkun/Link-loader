@@ -92,18 +92,18 @@ def fake_file_with_urls_with_size(file_size: int = None, url_size: int = 255, ex
     file = (BytesIO(url_str.encode()), file_name)
     return file
 
-
-def fake_file_with_urls(count: int = None, extension: str = None) -> tuple[BytesIO, str]:
-    """ create struct for flask file handler with current number of urls """
-    # set given or random extension
-    if extension:
-        file_name = fake.file_name(extension=extension)
-    else:
-        file_name = fake.file_name()
-    # add fake urls
-    urls = get_fake_urls(count)
-    urls_str = "\n".join(urls)
-    for fake_url in urls:
-        print(fake_url)
-    file = (BytesIO(urls_str.encode()), file_name)
-    return file
+# TODO: remove if it not used in tests
+# def fake_file_with_urls(count: int = None, extension: str = None) -> tuple[BytesIO, str]:
+#     """ create struct for flask file handler with current number of urls """
+#     # set given or random extension
+#     if extension:
+#         file_name = fake.file_name(extension=extension)
+#     else:
+#         file_name = fake.file_name()
+#     # add fake urls
+#     urls = get_fake_urls(count)
+#     urls_str = "\n".join(urls)
+#     for fake_url in urls:
+#         print(fake_url)
+#     file = (BytesIO(urls_str.encode()), file_name)
+#     return file

@@ -1,16 +1,13 @@
 import pytest
-from flask import url_for
 from http import HTTPStatus
 
 from linker_app.utils.testing import (
     get_correct_links,
     get_failed_links,
     get_csrf_token,
-    fake_file_with_urls,
     fake_file_with_urls_with_size,
 )
 from linker_app.utils.config import FILE_MAX_SIZE
-from linker_app import rabbit
 
 
 # from linker_app.tests.conftest import client  # noqa: F401

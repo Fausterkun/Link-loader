@@ -25,7 +25,8 @@ socketio = SocketIO()
 db = SQLAlchemy(model_class=IdModel, metadata=metadata)
 
 # init migrations in db directory
-migrate = Migrate(directory=os.path.join(APP_DIR, "database", "migrations"))
+MIGRATIONS_DIR = os.path.join(APP_DIR, "database", "migrations")
+migrate = Migrate(directory=MIGRATIONS_DIR)
 csrf = CSRFProtect()
 rabbit = RQExtension()
 

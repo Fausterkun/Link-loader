@@ -4,7 +4,6 @@
 #     link_form_handler,
 #     link_handler
 # )
-from linker_app.utils.testing import fake_file_with_urls, fake_file_with_urls_with_size
 
 
 # Tests for

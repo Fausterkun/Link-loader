@@ -1,11 +1,10 @@
 import pytest
-import uuid
 
 from sqlalchemy_utils import create_database, drop_database
 from yarl import URL
 
 from flask_migrate import upgrade
-from linker_app import create_app, db, migrate
+from linker_app import create_app
 from linker_app.utils.config import load_config, BASE_CONFIG_NAME
 
 

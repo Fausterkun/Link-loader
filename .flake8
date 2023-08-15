@@ -5,4 +5,3 @@ per-file-ignores =
     # ignore unused import and import from uncorrect places
     # link_loader.py:F401,E402,F403
     ./linker_app/*/__init__.py:F401,E402,F403
-    ./linker_app/tests/*.py:F403,F401,F811

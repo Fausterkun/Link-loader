@@ -1,6 +1,6 @@
 class WorkerError(RuntimeError):
-    """ Error due worker runtime """
+    """Error due worker runtime"""
 
 
 class ConnectionToDatabaseError(WorkerError):
-    """ Error connection to database """
+    """Error connection to database"""

@@ -1,8 +1,6 @@
 import copy
 import math
 
-import pytest
-
 from linker_app.database.query import get_links, create_or_update_links, create_or_update_link
 from linker_app.database.schema import Links
 from linker_app.utils.query import parse_url

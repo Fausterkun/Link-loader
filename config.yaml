@@ -16,8 +16,6 @@ LINKS_MAX_PER_PAGE: 200
 #URL_MAX_SIZE : 255 # bytes
 
 # --------- Sqlalchemy settings ---------
-SQLITE_DATABASE_URI: "sqlite://"
-
 SQLALCHEMY_DATABASE_URI: &DB_URL "postgresql://test:test@localhost/test_db"
 SQLALCHEMY_POOL_SIZE: 5  # long living connections
 SQLALCHEMY_MAX_OVERFLOW: 10  # limit for pool overflow. Set -1 to no limit
@@ -40,9 +38,16 @@ RMQ_DURABLE: true
 
 
 #----------  Linker checker worker settings: ----------
-WORKER_PROC_NUM: 4  # setup here or count auto using os
+PROC_NUM: 4  # setup here or count auto using os
 CHUNK_SIZE: 2500  # max link chunk for every process
 REQUEST_TIMEOUT: 5  # sec
+LOCAL_DB_URI: &LOCAL_DB "sqlite://"
+PREDICTED_TIME: 600  # max predicted time for all requests done - after that time error will writen in log
+DB_URI: *DB_URL
+
+CI_DB_URI: *DB_URL
+CI_LOCAL_DB_URI: *LOCAL_DB
+
 
 #----------  External modules and logging settings: ----------
 SOCKETIO:
