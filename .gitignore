@@ -3,6 +3,9 @@
 linker_app/files/
 compose.env
 future_projects/
+logs/*
+static/*
+files/*
 
 # Django #
 *.log.*
