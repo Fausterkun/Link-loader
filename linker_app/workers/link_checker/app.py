@@ -70,19 +70,19 @@ class LinkCheckerWorker:
         self.logger = logger
 
     def _setup(self, args: Namespace | SimpleNamespace):
-        # setup configs from args and envs and from base
-        self._config_filename = (
-            args.config
-            if hasattr(args, "config")
-            else os.path.join(BASE_DIR, BASE_CONFIG_NAME)
-        )
-        self.config = load_config(self._config_filename)
+        """ setup configs from args and envs and from base"""
+        if hasattr(args, "config"):
+            self._config_filename = args.config
+        else:
+            self._config_filename = BASE_CONFIG_NAME
+
+        self.config = load_config(os.path.join(BASE_DIR, self._config_filename))
 
         self._db_url = (
-            args.remote_db if hasattr(args, "remote_db") else self.config["DB_URI"]
+            args.remote_db if args.remote_db else self.config["DB_URI"]
         )
         self._local_db_url = (
-            args.local_db if hasattr(args, "local_db") else self.config["LOCAL_DB_URI"]
+            args.local_db if args.local_db else self.config["LOCAL_DB_URI"]
         )
 
         self.chunk_size = (
@@ -101,15 +101,15 @@ class LinkCheckerWorker:
         )
 
     def run(self):
-        time_start = datetime.datetime.now()
         """ Create and run processes with async self._get_status_code task"""
+        time_start = datetime.datetime.now()
         self.logger.info(f"Start check links status code. Chunk size: {self.chunk_size}")
         urls = self._get_urls()
         chunks = [
             urls[i: i + self.chunk_size] for i in range(0, len(urls), self.chunk_size)
         ]
         with multiprocessing.Pool(processes=self.proc_num) as pool:
-            result = pool.map(self._handle_urls, chunks)
+            result = pool.map(handle_urls, chunks)
         for _ in result:
             pass
 

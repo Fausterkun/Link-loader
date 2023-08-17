@@ -18,7 +18,6 @@ from linker_app.utils.config import BASE_CONFIG_NAME, load_config
 from linker_app.database.schema import FileRequest
 from linker_app.service.validators import UrlValidator
 from linker_app.service.exceptions import ValidationError
-
 from linker_app.workers.query import upsert_links_query
 
 logger = logging.getLogger(__name__)

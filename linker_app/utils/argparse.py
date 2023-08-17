@@ -1,4 +1,6 @@
 import os
+from types import NoneType
+from configargparse import ArgumentTypeError
 
 
 # def validate(type: callable, constrain: callable):
@@ -9,9 +11,13 @@ import os
 #         return value
 #
 #     return wrapper
-#
-#
+
 # positive_int = validate(int, constrain=lambda x: x > 0)
+
+def str_or_none(value):
+    if type(value) not in (str, NoneType):
+        raise ArgumentTypeError
+    return value
 
 
 def clear_environ(rule):

@@ -1,5 +1,5 @@
+import os
 import yaml
-import os.path
 import logging
 
 from logging.handlers import RotatingFileHandler

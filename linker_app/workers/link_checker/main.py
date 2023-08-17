@@ -5,6 +5,7 @@ from logging import StreamHandler
 
 from configargparse import ArgumentParser
 
+from linker_app.utils.argparse import str_or_none
 from linker_app.workers.link_checker import LinkCheckerWorker
 from linker_app.workers.exceptions import WorkerError
 
@@ -14,16 +15,21 @@ parser = ArgumentParser(
     auto_env_var_prefix=ENV_VAR_PREFIX,
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
-parser.add_argument("--config", type=str, default="config.yaml", help="Config filename")
+parser.add_argument(
+    "--config",
+    type=str_or_none,
+    default="config.yaml",
+    help="Config filename"
+)
 parser.add_argument(
     "--remote-db",
-    type=str,
+    type=str_or_none,
     default=None,
     help="Url for main database, in not setup -" " value got from config file",
 )
 parser.add_argument(
     "--local-db",
-    type=str,
+    type=str_or_none,
     default=None,
     help="Url for local database, in not setup -" " value got from config file",
 )
@@ -47,6 +53,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     configure_logging()
     app = LinkCheckerWorker(args)
+    print('start app')
     try:
         logger.info("Start Link checker task")
         app.run()
@@ -54,3 +61,4 @@ if __name__ == "__main__":
         logger.error(
             f"Error due check links status code worker. Process not finished.\n{e}"
         )
+    print('finish app')

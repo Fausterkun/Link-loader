@@ -48,7 +48,7 @@ def migrated_db(worker_db_url):
 
 
 @pytest.fixture
-def db_session(worker_db_url, ):
+def db_session(worker_db_url):
     # upgrade db
     engine = create_engine(worker_db_url)
     Session = sessionmaker(bind=engine)
@@ -91,24 +91,23 @@ class TestGetStatusCode:
 
 @pytest.fixture
 def worker_app(worker_db_url):
-    # config_filename = os.path.join(BASE_DIR, BASE_CONFIG_NAME)
-    # config = load_config(config_filename)
     test_remote_db_url = worker_db_url
 
-    # test_local_db_url = config.get("CI_LOCAL_DB_URI")
-    # args = SimpleNamespace(remote_db=test_remote_db_url, local_db=test_local_db_url)
-    args = SimpleNamespace(remote_db=test_remote_db_url)
+    args = SimpleNamespace(remote_db=test_remote_db_url,
+                           local_db=None)
     return LinkCheckerWorker(args)
 
 
 class TestWorker:
-    def test_get_urls(self, worker_app, migrated_db, db_session):
+    def test_get_urls(self, worker_app, db_session):
         # create links in db
-        urls = get_fake_urls(20)
+        urls = get_fake_urls(33)
         links = [parse_url(url) for url in urls]
         query = insert(Links).values(links)
         db_session.execute(query)
         db_session.commit()
+
+        # call check function
         result = worker_app._get_urls()
         assert list(urls) == result
         db_session.query(Links).filter(Links.url in urls).delete(synchronize_session=False)
