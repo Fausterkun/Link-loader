@@ -37,8 +37,17 @@ def links():
     # get paginated links
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    links = get_links(page=page, per_page=per_page)
-    return render_template(template_name, url_form=url_form, file_form=file_form, links=links), status_code
+    domain = request.args.get('domain', '', type=str)
+    links = get_links(page=page, per_page=per_page, domain=domain)
+    return render_template(
+        template_name,
+        url_form=url_form,
+        file_form=file_form,
+        links=links,
+        domain=domain,
+        page=page,
+        per_page=per_page
+    ), status_code
 
 
 @bp.route("/logs", methods=["GET"])

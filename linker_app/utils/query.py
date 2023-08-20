@@ -1,10 +1,13 @@
 import json
 from urllib.parse import urlparse, parse_qs
+from sqlalchemy import insert
+from sqlalchemy.orm import Session
 
+from linker_app.database.schema import Links
 from linker_app.service.exceptions import UrlValidationError
 
 
-def parse_url(link: str):
+def parse_url(link: str) -> dict:
     """parse str url and serialize it to dict object"""
     try:
         parsed_link = urlparse(link)

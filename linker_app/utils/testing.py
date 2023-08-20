@@ -61,7 +61,7 @@ def get_failed_links():
 
 
 def get_fake_urls(count: int = None) -> set:
-    """ generate unique fake urls """
+    """ generate unique fake urls with unique domains """
     if not count:
         count = LINKS_IN_TEST_DATABASE
     fake_urls = set()

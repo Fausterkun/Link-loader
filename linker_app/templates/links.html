@@ -3,7 +3,6 @@
 {% block title %} Links {% endblock %}
 
 {% block content %}
-<!-- Data will be added dynamically using JavaScript -->
 
 <div class="container mt-5">
     <form id="add-link" method="post">
@@ -18,7 +17,6 @@
             {{ url_form.link(size=20, class="form-control") }}
             {{ url_form.submit_link(class="btn btn-primary m-2") }}
         </div>
-        <!--        <button type="submit" class="btn btn-primary m-2" value="Send">Add Person</button>-->
     </form>
     <form id="add-file" method="post" enctype="multipart/form-data">
         <ul class="errors">
@@ -33,14 +31,30 @@
             {{ file_form.submit_file(class="btn btn-primary m-2") }}
         </div>
     </form>
+    <form class="form-control" method="get">
+        <label for="domain"></label>
+        <input type="text" id="domain" name="domain" value="{{ domain }}">
+        <select id="per_page" name="per_page" class="form-select" aria-label="per_page">
+            <option name="per_page" value="10" {% if per_page== 10 %}selected{% endif %}>10</option>
+            <option name="per_page" value="20" {% if per_page== 20 %}selected{% endif %}>20</option>
+            <option name="per_page" value="50" {% if per_page== 50 %}selected{% endif %}>50</option>
+            <option name="per_page" value="100" {% if per_page== 100 %}selected{% endif %}>100</option>
+        </select>
+        <button class="btn btn-primary m-2" type="submit">Apply filter</button>
+    </form>
 </div>
-<div class="container mt-4">
+<!-----------------------  Page filters ------------------------------>
+<div class="container-mt-4">
+    <!----------------------- Pagination ------------------------------>
     <h1>Link Table</h1>
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             {% if links.has_prev %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ links.prev_num }}&per_page={{ links.per_page }}">Previous</a>
+                <a class="page-link"
+                   href="?page={{ links.prev_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                    Previous
+                </a>
             </li>
             {% endif %}
             {% for page_num in links.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
@@ -51,18 +65,20 @@
             </li>
             {% else %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_num }}&per_page={{ links.per_page }}">{{ page_num }}</a>
+                <a class="page-link"
+                   href="?page={{ page_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                    {{ page_num }}
+                </a>
             </li>
             {% endif %}
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link">...</span>
-            </li>
             {% endif %}
             {% endfor %}
             {% if links.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ links.next_num }}&per_page={{ links.per_page }}">Next</a>
+                <a class="page-link"
+                   href="?page={{ links.next_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                    Next
+                </a>
             </li>
             {% endif %}
         </ul>

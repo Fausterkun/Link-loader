@@ -1,4 +1,5 @@
 import logging
+import typing
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
@@ -35,7 +36,7 @@ def create_or_update_link(session: Session, **params):
         raise SaveToDatabaseError("Can't save link to database, try again latter or say system admin.")
 
 
-def create_or_update_links(session: Session, links: list[Links]):
+def create_or_update_links(session: Session, links: list[Links | dict]):
     """
      Upsert query for update unavailable_times to zero if url already in db
       Note that this dialect dependent feature and used only for postgres
@@ -50,7 +51,8 @@ def create_or_update_links(session: Session, links: list[Links]):
     session.commit()
 
 
-def get_links(page: int = None, per_page: int = None, max_per_page: int = None, **params):
+def get_links(page: int = None, per_page: int = None, max_per_page: int = None, domain: str = '', **params) \
+        -> typing.Iterable[Links]:
     """
      Query to get all links in db with pagination, max links in query got from config
      At None values params will be gotten from request(see doc or source code)
@@ -58,5 +60,6 @@ def get_links(page: int = None, per_page: int = None, max_per_page: int = None, 
     if not max_per_page:
         max_per_page = current_app.config.get('LINKS_MAX_PER_PAGE', 100)
     max_per_page = min(max_per_page, current_app.config.get('LINKS_MAX_PER_PAGE', 100))
-    links = Links.query.paginate(page=page, per_page=per_page, max_per_page=max_per_page)
+    query = Links.query.filter(Links.domain.contains(domain))
+    links = query.paginate(page=page, per_page=per_page, max_per_page=max_per_page)
     return links

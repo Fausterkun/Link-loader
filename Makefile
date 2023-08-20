@@ -70,6 +70,7 @@ postgres:
 
 rabbitmq:
 	docker compose -f docker-compose-rabbit.yaml up --build -d 
+
 test: 
 	pytest --disable-warnings
 
