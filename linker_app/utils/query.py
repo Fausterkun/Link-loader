@@ -1,9 +1,5 @@
 import json
 from urllib.parse import urlparse, parse_qs
-from sqlalchemy import insert
-from sqlalchemy.orm import Session
-
-from linker_app.database.schema import Links
 from linker_app.service.exceptions import UrlValidationError
 
 

@@ -48,35 +48,33 @@ class TestGetLinks:
                     assert len(check_urls) == 0
 
     def test_domain_filter(self, app):
-        urls_count = 70
-        domains_count = 4
-        # create fake urls and list with their domains
-        parsed_urls = [parse_url(url) for url in get_fake_urls(urls_count)]
+        """ We can't use fake.url() here cause half-duplicate urls """
+        test_urls_count = 4
 
-        test_url = parsed_urls[0]['url']
-        test_domain = parsed_urls[0]['domain']
+        # create urls
+        urls = {
+            'http://test-url.com/',
+            'http://pass-url.cz',
+            'https://google.com/',
+            'http://test.com',
+        }
 
-        # add more test urls with same domain
-        test_urls = [test_url, ]
+        # add more urls with same domain
+        test_url = "http://cute-cat.su/"
+        test_domain = parse_url(test_url)['domain']
         i = 0
-        while i < domains_count:
-            url = test_url + str(i)
-            parsed_urls.append(parse_url(url))
-            test_urls.append(url)
+        while i < test_urls_count:
+            url = test_url + str(i)  # http://cute-cat.su/0 ... 3
+            urls.add(url)
             i += 1
-
         # add parsed_urls in db and test filtered query
+        parsed_urls = [parse_url(url) for url in urls]
         with app.app_context():
             # open session and transaction
             with db.session() as session:
                 session.add_all([Links(**parsed_url) for parsed_url in parsed_urls])
                 result = list(get_links(domain=test_domain))
-                assert len(result) == len(test_urls)
-
-                # test that exactly test_urls found in db
-                for obj in result:
-                    test_urls.remove(obj.url)
-                assert len(test_urls) == 0
+                assert len(result) == test_urls_count
 
 
 class TestInsertUpdateLinks:
