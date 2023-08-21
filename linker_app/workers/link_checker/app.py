@@ -108,10 +108,15 @@ class LinkCheckerWorker:
         chunks = [
             urls[i: i + self.chunk_size] for i in range(0, len(urls), self.chunk_size)
         ]
+        full_result = []
         with multiprocessing.Pool(processes=self.proc_num) as pool:
             result = pool.map(handle_urls, chunks)
+            for chunk in result:
+                full_result.extend(chunk)
         for _ in result:
-            pass
+            # update values in db
+            # add news values in db
+            return full_result
 
         processed_time = datetime.datetime.now() - time_start
         if processed_time > self.predicted_time:
@@ -124,13 +129,12 @@ class LinkCheckerWorker:
     def _get_urls(self) -> list:
         try:
             with self.Session() as session:
-                links = [
-                    _[0]
-                    for _ in session.query(Links.url)
+                links = (
+                    session.query(Links.url)
                     .filter(Links.unavailable_times < 4)
                     .all()
-                ]
-            return links
+                )
+            return [link[0] for link in links]
         except SQLAlchemyError as e:
             self.logger.error("Error due try to get links from db \n", e)
             raise ConnectionToDatabaseError("Can't get actual links from database.")
