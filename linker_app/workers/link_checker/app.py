@@ -33,7 +33,7 @@ def handle_urls(urls: list[str]):
     return result
 
 
-async def get_status_code(url: str, timeout: int = 600):
+async def get_status_code(url: str, timeout: int = 600) -> tuple[str, int | None]:
     """Coroutine for open session and make request to url"""
     pid = os.getpid()
     async with aiohttp.ClientSession() as session:
