@@ -8,26 +8,19 @@ from sqlalchemy.orm import Session
 from linker_app.service.exceptions import SaveToDatabaseError
 from linker_app.database.schema import Links
 from linker_app.utils.db import check_dialect
-from linker_app import db
+from linker_app.utils.query import parse_url
 
 from flask import current_app
 
 logger = logging.getLogger(__name__)
 
 
-def create_or_update_link(session: Session, **params):
+def upsert_link(session: Session, url: str):
     """Create if link object is not exists yet, or update it unavailable_times to zero"""
-    # TODO: can be improved using upsert
-    url = params["url"]
-    try:
-        link = Links.query.filter_by(url=url).first()
+    url = parse_url(url)
 
-        # if already in db then update, else insert
-        if link:
-            link.unavailable_times = 0
-        else:
-            link = Links(**params)
-            db.session.add(link)
+    try:
+        upsert_links(session, [url])
         session.commit()
     except SQLAlchemyError as e:
         # TODO: add log info with e
@@ -36,7 +29,7 @@ def create_or_update_link(session: Session, **params):
         raise SaveToDatabaseError("Can't save link to database, try again latter or say system admin.")
 
 
-def create_or_update_links(session: Session, links: list[Links | dict]):
+def upsert_links(session: Session, links: list[Links | dict]):
     """
      Upsert query for update unavailable_times to zero if url already in db
       Note that this dialect dependent feature and used only for postgres

@@ -8,9 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from linker_app import db, rabbit, BASE_DIR
 from linker_app.main.forms import UrlForm, FileForm
-from linker_app.utils.query import parse_url
 from linker_app.database.schema import FileRequest
-from linker_app.database.query import create_or_update_link
+from linker_app.database.query import upsert_link
 from linker_app.service.exceptions import (
     UrlValidationError,
     SaveToDatabaseError,
@@ -46,8 +45,8 @@ def link_handler(url: str) -> None | str:
     """ Handle url serialize it and save to db """
     error_msg = None
     try:
-        parsed = parse_url(url)
-        create_or_update_link(db.session, **parsed)
+        # parsed = parse_url(url)
+        upsert_link(db.session, url)
     except (UrlValidationError, SaveToDatabaseError) as e:
         error_msg = "Error due link handle."
         logger.error(f'Error due handle link:\n{e}')

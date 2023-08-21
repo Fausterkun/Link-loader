@@ -1,7 +1,7 @@
 import copy
 import math
 
-from linker_app.database.query import get_links, create_or_update_links, create_or_update_link
+from linker_app.database.query import get_links, upsert_links, upsert_link
 from linker_app.database.schema import Links
 from linker_app.utils.query import parse_url
 from linker_app import db
@@ -81,11 +81,10 @@ class TestInsertUpdateLinks:
     def test_create_or_update_link(self, app):
         """ Test create or update single link (without upsert)"""
         url = fake.url()
-        parsed_url = parse_url(url)
 
         with app.app_context():
             # 1. do insert and check it:
-            create_or_update_link(session=db.session, **parsed_url)
+            upsert_link(session=db.session, url=url)
 
             # check that inserted
             link = Links.query.filter_by(url=url).first()
@@ -100,19 +99,19 @@ class TestInsertUpdateLinks:
             assert link.unavailable_times == 2
 
             # 3. check that unavailable_count changed to 0 if obj already in db
-            create_or_update_link(session=db.session, **parsed_url)
+            upsert_link(session=db.session, url=url)
             link = Links.query.filter_by(url=url).first()
             assert link.unavailable_times == 0
 
-    def test_create_or_update_links(self, app):
-        """ Test create_or_update_links method """
+    def test_upsert_links(self, app):
+        """ Test upsert_links method """
         urls_num = 10
         urls = get_fake_urls(urls_num)
         parsed_urls = [parse_url(url) for url in urls]
 
         with app.app_context():
             # 1. Check that data inserted
-            create_or_update_links(session=db.session, links=parsed_urls)
+            upsert_links(session=db.session, links=parsed_urls)
             links = Links.query.filter(Links.url.in_(urls)).all()
 
             # check result nums:
@@ -134,7 +133,7 @@ class TestInsertUpdateLinks:
                 assert link.unavailable_times == 2
 
             # 3. Check that unavailable_times updated to 0 if obj exist
-            create_or_update_links(session=db.session, links=parsed_urls)
+            upsert_links(session=db.session, links=parsed_urls)
             links = Links.query.filter(Links.url.in_(urls))
             for link in links:
                 assert link.unavailable_times == 0
