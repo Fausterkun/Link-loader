@@ -42,78 +42,77 @@
         </select>
         <button class="btn btn-primary m-2" type="submit">Apply filter</button>
     </form>
-</div>
-<!-----------------------  Page filters ------------------------------>
-<div class="container-mt-4">
-    <!----------------------- Pagination ------------------------------>
-    <h1>Link Table</h1>
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            {% if links.has_prev %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ links.prev_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
-                    Previous
-                </a>
-            </li>
-            {% endif %}
-            {% for page_num in links.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-            {% if page_num %}
-            {% if links.page == page_num %}
-            <li class="page-item active">
-                <span class="page-link">{{ page_num }}</span>
-            </li>
-            {% else %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ page_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
-                    {{ page_num }}
-                </a>
-            </li>
-            {% endif %}
-            {% endif %}
-            {% endfor %}
-            {% if links.has_next %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ links.next_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
-                    Next
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Protocol</th>
-            <th>URL</th>
-            <th>Domain</th>
-            <th>Domain Zone</th>
-            <th>Path</th>
-            <th>Query Params</th>
-            <th>Unavailable times</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for link in links %}
-        <tr>
-            <td>{{ link.protocol }}</td>
-            <td>{{ link.url }}</td>
-            <td>{{ link.domain }}</td>
-            <td>{{ link.domain_zone }}</td>
-            <td>{{ link.path }}</td>
-            <td>
-                {% if link.params %}
-                {{ link.params }}
-                {% else %}
-                None
+    <div class="container-mt-4">
+        <!----------------------- Pagination ------------------------------>
+        <h1>Link Table</h1>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if links.has_prev %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ links.prev_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                        Previous
+                    </a>
+                </li>
                 {% endif %}
-            </td>
-            <td>{{ link.unavailable_times }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                {% for page_num in links.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                {% if links.page == page_num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ page_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                        {{ page_num }}
+                    </a>
+                </li>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% if links.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ links.next_num }}&per_page={{ links.per_page }}&domain={{ domain }}">
+                        Next
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Protocol</th>
+                <th>URL</th>
+                <th>Domain</th>
+                <th>Domain Zone</th>
+                <th>Path</th>
+                <th>Query Params</th>
+                <th>Unavailable times</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for link in links %}
+            <tr>
+                <td>{{ link.protocol }}</td>
+                <td>{{ link.url }}</td>
+                <td>{{ link.domain }}</td>
+                <td>{{ link.domain_zone }}</td>
+                <td>{{ link.path }}</td>
+                <td>
+                    {% if link.params %}
+                    {{ link.params }}
+                    {% else %}
+                    None
+                    {% endif %}
+                </td>
+                <td>{{ link.unavailable_times }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
